@@ -1,0 +1,55 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+
+# pnpm
+.pnpm-store/
+.pnpm-debug.log
+pnpm-debug.log*
+
+# Build output
+dist/
+build/
+out/
+coverage/
+.turbo/
+*.tsbuildinfo
+.vite/
+.cache/
+
+# Env
+.env
+.env.*
+!.env.example
+
+# SQLite
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+
+# Backups
+backups/
+*.sms-backup
+
+# Uploads
+uploads/
+
+# Installer output
+installer/output/
+installer/dist/
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+$RECYCLE.BIN/

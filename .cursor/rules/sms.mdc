@@ -1,0 +1,20 @@
+---
+description: Core rules for the Promptstack School Management System
+alwaysApply: true
+---
+
+You are building a production-grade School Management System for a Cameroonian school, delivered by Promptstack Technologies.
+
+NON-NEGOTIABLES
+- Language: TypeScript (strict mode) everywhere. No `any` unless justified in a comment.
+- The system runs LOCALLY on one Windows 10/11 PC (the "school server") and is used by other PCs on the same LAN through a browser. It MUST work with NO internet connection.
+- Money is stored as INTEGER FCFA (XAF has no decimals). Never use floats for money.
+- Payments, receipts and audit logs are APPEND-ONLY. Never hard-delete or silently edit a payment. Corrections = reversal or adjustment entry with a reason, linked to the original, with audit trail.
+- Every write action records who, when, what changed (before/after) in the audit log.
+- All permissions are enforced on the SERVER. Hiding a button in the UI is never enough.
+- Validate all input on the server with Zod. Return consistent error shapes.
+- Every feature ships with tests (unit for business rules, integration for API, e2e for critical flows).
+- No placeholder code, no TODO stubs, no fake data in production paths. Seed data lives only in the seed script.
+- Small, focused commits. After each task: run typecheck, lint, tests. Fix failures before moving on.
+- UI: purple and white design system (see tokens in docs/SPEC.md section 11). Accessible, keyboard friendly, responsive down to 1024px wide, printable reports.
+- When a requirement is ambiguous, choose the safest sensible default, document it in docs/DECISIONS.md, and continue. Do not stop to ask unless it blocks progress.
