@@ -228,3 +228,9 @@ This supersedes spec section 2’s “bundle Node and run it as a Windows servic
 **Decision:** `enrolments` is unique on `(pupil_id, academic_year_id)`. Bulk promote deletes the source-class row and inserts the target-class row in one transaction, tagged with `promotion_batches`. Undo (48 hours) reverses that swap. Historical class movement for the same year is visible on the batch record and audit log, not as stacked enrolment rows.
 
 **Reason:** A pupil cannot sit in two classes in the same year. Timeline still shows remaining enrolment and status events.
+
+## D035 — Receipt PDF without a browser
+
+**Decision:** Receipts are generated in-process as a one-page PDF (Helvetica text: school, pupil, lines, balance, verification code). Reprint sets status `duplicate_reprint` and prints DUPLICATE. Reversal watermarks REVERSED. A later pass may swap the builder for full pdfmake templates without changing numbers or ledger rules.
+
+**Reason:** D011 still holds; Phase 3 ships a printable file the bursar can open offline. Layout polish is not allowed to delay money correctness.

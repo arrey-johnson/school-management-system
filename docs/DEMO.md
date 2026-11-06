@@ -1,10 +1,11 @@
-# Demo — Phase 2 Structure and pupils
+# Demo — Phase 3 Fees and payments
 
-1. Start the stack: `docker compose up --build`.
-2. Open `http://localhost:3847/setup` and complete Super Admin, school **ALL BRIGHT CHILDREN**, year **2026/2027**.
-3. Open **School structure**. Add class **Form 1** stream **A**, then a subject (e.g. ENG / English). Confirm grading defaults (Primary /100, Secondary /20).
-4. Open **Admissions**. Create an application for Amina Ngono, Form 1, guardian phone `677111222`.
-5. Review → Accept → enrol into **Form 1 A**. Admission number should be `ABC-2026-0001`.
-6. Open **Pupils**, search `Amina` and `677111222`. Open the pupil and check the timeline and guardian.
-7. Enrol another pupil directly from the directory, or import a CSV with header `givenName,familyName,sex,dob,classStream,guardianGivenName,guardianFamilyName,guardianPhone,relationship` (classStream like `Form 1 A`). Dry-run errors appear for unknown classes.
-8. Sign in as a **teacher**: Admissions create is denied (no manage permission).
+1. `docker compose up --build` and finish first-run setup if needed.
+2. **School structure**: add **Form 1 A**.
+3. **Fees & Payments**: add fee item `TUI` / Tuition / `50000`.
+4. **Pupils**: enrol Amina Ngono into Form 1 A (invoice is created automatically).
+5. On **Fees & Payments**, search `Amina` (or `ABC-2026-0001`), pay `20000` cash. A receipt PDF opens as `RC-00001`. Pay the remaining `30000` as `RC-00002`. Balance should be paid.
+6. Sign in as a **bursar**, record a payment, request reverse. Sign in as **admin** and approve. The maker (bursar) cannot approve their own reversal.
+7. Add a **FCFA 15,000** discount — it stays pending until a second user approves.
+8. Close cash-up for today; further payments that day by the same cashier are blocked until reopen is approved.
+9. Overview shows outstanding fees.

@@ -15,6 +15,7 @@ import {
   pupils,
   sections,
 } from "../../db/schema.js";
+import { generateInvoiceForPupil } from "../fees/service.js";
 import { httpError } from "../../utils/http-error.js";
 
 type GuardianInput = z.infer<typeof guardianInputSchema>;
@@ -195,6 +196,7 @@ export function createEnrolledPupil(
     const guardianId = upsertGuardian(bundle, input.guardian);
     linkGuardian(bundle, id, guardianId, input.guardian);
     enrolPupil(bundle, id, input.classId, "new", input.actorUserId);
+    generateInvoiceForPupil(bundle, id, input.actorUserId);
     return { id, admissionNumber };
   };
   if (bundle.sqlite.inTransaction) return run();

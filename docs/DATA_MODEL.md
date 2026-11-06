@@ -1,23 +1,18 @@
-# Data model (Phase 2)
+# Data model (Phase 3)
 
-Foundation tables: `school_profile`, `academic_years`, `terms`, `sections`, `levels`, `users`, `roles`, `permissions`, `role_permissions`, `sessions`, `login_attempts`, `audit_log`, `settings`, `number_sequences`.
-
-Pupil tables: `classes`, `subjects`, `class_subjects`, `grading_scales`, `grading_scale_bands`, `applications`, `pupils`, `pupil_status_history`, `guardians`, `pupil_guardians`, `enrolments`, `promotion_batches`, `discipline_notes`.
+Foundation, pupils, and fees. Money columns are INTEGER FCFA. Payments, allocations, receipts, reversals, adjustments, and audit rows are append-only.
 
 ```mermaid
 erDiagram
-  roles ||--o{ users : has
-  academic_years ||--o{ terms : contains
-  academic_years ||--o{ classes : has
-  sections ||--o{ levels : contains
-  levels ||--o{ classes : streamed
-  classes ||--o{ class_subjects : offers
-  subjects ||--o{ class_subjects : taught
-  applications ||--o| pupils : enrols
-  pupils ||--o{ enrolments : placed
-  classes ||--o{ enrolments : roster
-  pupils ||--o{ pupil_guardians : linked
-  guardians ||--o{ pupil_guardians : linked
+  pupils ||--o{ pupil_invoices : billed
+  pupil_invoices ||--o{ invoice_lines : contains
+  fee_items ||--o{ invoice_lines : snapshotted
+  invoice_lines ||--o{ adjustments : corrected
+  pupils ||--o{ payments : pays
+  payments ||--o{ payment_allocations : splits
+  invoice_lines ||--o{ payment_allocations : receives
+  payments ||--o| receipts : numbered
+  payments ||--o{ reversals : voided
 ```
 
-Primary keys are UUIDv7. Admission numbers are `ABC-{YEAR}-{SEQ:4}` from a per-year sequence, issued only on enrolment. Enrolment is unique per pupil per academic year. Payments (later) stay INTEGER FCFA. Audit rows are append-only with `prev_hash` / `row_hash`.
+Balances = invoice lines + applied adjustments − net allocations. Receipt numbers come from `number_sequences.receipt` in the same transaction as the payment.

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0 — Phase 3 Fees and payments
+
+- Fee items, auto-invoice on enrolment, integer FCFA ledgers, oldest-first allocation.
+- Payments with receipt numbers `RC-00001`, printable PDF, idempotency keys, duplicate-day confirmation.
+- Discounts above FCFA 10,000 and payment reversals require a second approver (maker cannot approve self).
+- Arrears list, reminder text, cash-up close, month period locks, finance dashboard.
+
 ## 0.2.1 — Empty JSON POST bodies
 
 - Accept `Content-Type: application/json` with an empty body (Finish setup, Sign out, audit verify). The browser client now sends `{}` on those calls.

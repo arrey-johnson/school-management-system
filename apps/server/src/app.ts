@@ -13,6 +13,7 @@ import { seedFoundation } from "./db/seed.js";
 import { registerAcademicRoutes } from "./modules/academic/routes.js";
 import { registerAdmissionRoutes } from "./modules/admissions/routes.js";
 import { registerAuthRoutes } from "./modules/auth/routes.js";
+import { registerFeeRoutes } from "./modules/fees/routes.js";
 import { registerPupilRoutes } from "./modules/pupils/routes.js";
 import { registerSetupRoutes } from "./modules/setup/routes.js";
 import { registerSystemRoutes } from "./modules/system/routes.js";
@@ -53,6 +54,7 @@ export async function buildApp(env: AppEnv, options: { logger?: boolean } = {}):
   registerAcademicRoutes(app, ctx);
   registerAdmissionRoutes(app, ctx);
   registerPupilRoutes(app, ctx);
+  registerFeeRoutes(app, ctx);
 
   const webDist = resolveWebDist();
   if (webDist) {

@@ -180,3 +180,71 @@ export const importPupilsSchema = z.object({
   dryRun: z.boolean().default(true),
   rows: z.array(importPupilRowSchema).min(1).max(2000),
 });
+
+export const PAYMENT_CHANNELS = [
+  "cash",
+  "mtn_momo",
+  "orange_money",
+  "bank",
+  "cheque",
+  "other",
+] as const;
+export type PaymentChannel = (typeof PAYMENT_CHANNELS)[number];
+
+export const ADJUSTMENT_TYPES = ["discount", "waiver", "scholarship", "late_fee"] as const;
+
+export const feeItemCreateSchema = z.object({
+  code: z.string().trim().min(1).max(20),
+  name: z.string().trim().min(1).max(120),
+  amountFcfa: z.number().int().positive(),
+  mandatory: z.boolean().default(true),
+  scope: z.enum(["year", "term"]).default("year"),
+  academicYearId: z.string().min(1),
+  termId: z.string().min(1).optional(),
+  sectionId: z.string().min(1).optional(),
+  levelId: z.string().min(1).optional(),
+  classId: z.string().min(1).optional(),
+});
+
+export const paymentCreateSchema = z.object({
+  pupilId: z.string().min(1),
+  amountFcfa: z.number().int().positive(),
+  channel: z.enum(PAYMENT_CHANNELS),
+  entryDate: isoDateSchema,
+  payerName: z.string().trim().min(1).max(120),
+  reference: z.string().trim().max(80).optional().or(z.literal("")),
+  notes: z.string().trim().max(400).optional().or(z.literal("")),
+  confirmDuplicate: z.boolean().optional(),
+  lineIds: z.array(z.string().min(1)).optional(),
+});
+
+export const adjustmentCreateSchema = z.object({
+  invoiceLineId: z.string().min(1),
+  type: z.enum(ADJUSTMENT_TYPES),
+  amountFcfa: z.number().int().positive(),
+  reason: z.string().trim().min(3).max(400),
+});
+
+export const reversalRequestSchema = z.object({
+  reason: z.string().trim().min(3).max(400),
+});
+
+export const approvalDecideSchema = z.object({
+  decision: z.enum(["approved", "rejected"]),
+  reason: z.string().trim().max(400).optional().or(z.literal("")),
+});
+
+export const cashUpCloseSchema = z.object({
+  day: isoDateSchema,
+  countedCashFcfa: z.number().int().min(0),
+  notes: z.string().trim().max(400).optional().or(z.literal("")),
+});
+
+export const periodLockSchema = z.object({
+  kind: z.enum(["month", "term"]),
+  key: z.string().trim().min(1).max(40),
+});
+
+export const optionalFeeLineSchema = z.object({
+  feeItemId: z.string().min(1),
+});

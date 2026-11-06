@@ -8,6 +8,7 @@ const links: { to: string; labelKey: string; end?: boolean; perm: string | null 
   { to: "/structure", labelKey: "nav.structure", perm: "academic:read" },
   { to: "/admissions", labelKey: "nav.admissions", perm: "admissions:read" },
   { to: "/pupils", labelKey: "nav.pupils", perm: "pupils:read" },
+  { to: "/fees", labelKey: "nav.fees", perm: "payments:read" },
   { to: "/users", labelKey: "nav.settings", perm: "system:users" },
   { to: "/audit", labelKey: "nav.audit", perm: "system:audit" },
   { to: "/settings", labelKey: "nav.health", perm: "system:health" },

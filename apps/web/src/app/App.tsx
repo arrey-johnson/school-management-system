@@ -10,6 +10,7 @@ import { PupilDetailPage } from "../features/pupils/PupilDetailPage";
 import { PupilsPage } from "../features/pupils/PupilsPage";
 import { SettingsPage } from "../features/settings/SettingsPage";
 import { SetupPage } from "../features/setup/SetupPage";
+import { FeesPage } from "../features/fees/FeesPage";
 import { UsersPage } from "../features/users/UsersPage";
 import { AppShell } from "./AppShell";
 import { AuthProvider, useAuth } from "./AuthProvider";
@@ -41,6 +42,7 @@ function AppRoutes() {
         <Route path="admissions" element={<AdmissionsPage />} />
         <Route path="pupils" element={<PupilsPage />} />
         <Route path="pupils/:id" element={<PupilDetailPage />} />
+        <Route path="fees" element={<FeesPage />} />
         <Route path="users" element={<UsersPage />} />
         <Route path="audit" element={<AuditPage />} />
         <Route path="settings" element={<SettingsPage />} />
