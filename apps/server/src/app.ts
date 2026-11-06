@@ -12,13 +12,18 @@ import { openDatabase } from "./db/client.js";
 import { seedFoundation } from "./db/seed.js";
 import { registerAcademicRoutes } from "./modules/academic/routes.js";
 import { registerAcademicsRoutes } from "./modules/academics/routes.js";
+import { registerAdminRoutes } from "./modules/admin/routes.js";
 import { registerAdmissionRoutes } from "./modules/admissions/routes.js";
 import { registerAttendanceRoutes } from "./modules/attendance/routes.js";
 import { registerAuthRoutes } from "./modules/auth/routes.js";
+import { registerDashboardRoutes } from "./modules/dashboard/routes.js";
 import { registerExpenseRoutes } from "./modules/expenses/routes.js";
 import { registerFeeRoutes } from "./modules/fees/routes.js";
+import { registerInventoryRoutes } from "./modules/inventory/routes.js";
 import { registerPayrollRoutes } from "./modules/payroll/routes.js";
 import { registerPupilRoutes } from "./modules/pupils/routes.js";
+import { registerReportRoutes } from "./modules/reports/routes.js";
+import { registerSearchRoutes } from "./modules/search/routes.js";
 import { registerStaffRoutes } from "./modules/staff/routes.js";
 import { registerSetupRoutes } from "./modules/setup/routes.js";
 import { registerSystemRoutes } from "./modules/system/routes.js";
@@ -65,6 +70,11 @@ export async function buildApp(env: AppEnv, options: { logger?: boolean } = {}):
   registerStaffRoutes(app, ctx);
   registerPayrollRoutes(app, ctx);
   registerExpenseRoutes(app, ctx);
+  registerInventoryRoutes(app, ctx);
+  registerAdminRoutes(app, ctx);
+  registerReportRoutes(app, ctx);
+  registerSearchRoutes(app, ctx);
+  registerDashboardRoutes(app, ctx);
 
   const webDist = resolveWebDist();
   if (webDist) {

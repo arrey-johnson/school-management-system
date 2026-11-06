@@ -1,14 +1,19 @@
-# Data model (Phase 5)
+# Data model (Phase 6)
 
-Academics sit beside the academic tree from Phase 2. Marks may be fractional; money remains INTEGER FCFA elsewhere. Term results are recomputed snapshots, not live views. Payments stay append-only.
+Inventory quantity is the sum of `stock_movements.qty` (in positive, out negative). Calendar, announcements, and letter templates are school-admin tables.
 
 ```mermaid
 erDiagram
-  assessment_types ||--o{ assessments : typed
-  assessments ||--o{ marks : scored
-  class_subjects ||--o{ assessments : offered
-  pupils ||--o{ marks : receive
-  classes ||--o{ term_results : snapshot
-  pupils ||--o{ report_cards : issued
-  classes ||--o{ pupil_attendance : register
+  inventory_items ||--o{ stock_movements : moved
+  calendar_events {
+    string title
+    string kind
+  }
+  announcements {
+    string audience
+    string expires_on
+  }
+  document_templates {
+    string body
+  }
 ```

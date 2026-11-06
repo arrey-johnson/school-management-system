@@ -7,6 +7,7 @@ import { PHASE2_SQL } from "./phase2-sql.js";
 import { PHASE3_SQL } from "./phase3-sql.js";
 import { PHASE4_SQL } from "./phase4-sql.js";
 import { PHASE5_SQL } from "./phase5-sql.js";
+import { PHASE6_SQL } from "./phase6-sql.js";
 import * as schema from "./schema.js";
 
 export type Db = BetterSQLite3Database<typeof schema>;
@@ -30,6 +31,7 @@ export function openDatabase(dataDir: string): DatabaseBundle {
   sqlite.exec(PHASE3_SQL);
   sqlite.exec(PHASE4_SQL);
   sqlite.exec(PHASE5_SQL);
+  sqlite.exec(PHASE6_SQL);
   const db = drizzle(sqlite, { schema });
   return { sqlite, db, dbPath };
 }

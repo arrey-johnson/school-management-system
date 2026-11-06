@@ -1,7 +1,8 @@
-# Demo — Phase 5 Academics and attendance
+# Demo — Phase 6 Reports, inventory, dashboards
 
 1. Hard-refresh `http://localhost:3847` after `docker compose up --build`.
-2. Ensure Form 1 A exists with a subject offering (Structure) and enrolled pupils.
-3. **Academics**: add assessment type Sequence 1 (weight 1, max 20) for Term 1. Open the assessment, enter marks 0–20, Save draft, Submit and lock. Teacher cannot unlock; Headteacher/Admin Unlock.
-4. Compute term results. Tied averages share the minimum rank (1, 1, 3). Open a report card PDF.
-5. **Attendance**: pick the class and day, mark Present/Absent/Late/Excused, Submit register. An unassigned teacher is refused.
+2. **Overview**: Super Admin sees pupil/staff counts, fee cards, activity. Sign in as **teacher** — fees are hidden; “my classes / attendance to submit / marks pending” shows. Sign in as **secretary** for the admissions queue.
+3. **Search**: Ctrl+K, type a pupil name. Teacher results omit receipts.
+4. **Reports**: open Pupils, Print / Excel / PDF. Excel is a UTF-8 CSV. Export is written to the audit log. Teacher cannot open Payroll.
+5. **Inventory**: add SKU `CHALK-01`, stock in 10, stock out 6. Quantity is 4; low-stock flags when at or below min. Direct quantity fields do not exist. Outbound above on-hand is refused.
+6. **Admin**: add a calendar event, an announcement (`audience: all`), a letter template with `{{pupil.givenName}}`, merge onto a pupil.

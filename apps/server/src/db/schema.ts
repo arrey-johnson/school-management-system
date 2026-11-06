@@ -681,3 +681,56 @@ export const pupilAttendance = sqliteTable("pupil_attendance", {
   createdAt: text("created_at").notNull(),
   createdBy: text("created_by"),
 });
+
+export const inventoryItems = sqliteTable("inventory_items", {
+  id: text("id").primaryKey(),
+  sku: text("sku").notNull(),
+  name: text("name").notNull(),
+  category: text("category").notNull(),
+  location: text("location").notNull(),
+  condition: text("condition").notNull(),
+  acquiredOn: text("acquired_on").notNull(),
+  costFcfa: integer("cost_fcfa").notNull(),
+  minQty: integer("min_qty").notNull().default(1),
+  createdAt: text("created_at").notNull(),
+  createdBy: text("created_by"),
+});
+
+export const stockMovements = sqliteTable("stock_movements", {
+  id: text("id").primaryKey(),
+  itemId: text("item_id").notNull(),
+  qty: integer("qty").notNull(),
+  reason: text("reason").notNull(),
+  createdAt: text("created_at").notNull(),
+  createdBy: text("created_by"),
+});
+
+export const calendarEvents = sqliteTable("calendar_events", {
+  id: text("id").primaryKey(),
+  title: text("title").notNull(),
+  kind: text("kind").notNull(),
+  startDate: text("start_date").notNull(),
+  endDate: text("end_date").notNull(),
+  notes: text("notes"),
+  createdAt: text("created_at").notNull(),
+  createdBy: text("created_by"),
+});
+
+export const announcements = sqliteTable("announcements", {
+  id: text("id").primaryKey(),
+  title: text("title").notNull(),
+  body: text("body").notNull(),
+  audience: text("audience").notNull(),
+  expiresOn: text("expires_on"),
+  createdAt: text("created_at").notNull(),
+  createdBy: text("created_by"),
+});
+
+export const documentTemplates = sqliteTable("document_templates", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  body: text("body").notNull(),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+  createdBy: text("created_by"),
+});

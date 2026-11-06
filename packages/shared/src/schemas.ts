@@ -379,3 +379,52 @@ export const attendanceSubmitSchema = z.object({
     }),
   ),
 });
+
+export const INVENTORY_CONDITIONS = ["new", "good", "fair", "poor", "retired"] as const;
+export const STOCK_DIRECTIONS = ["in", "out"] as const;
+
+export const inventoryItemCreateSchema = z.object({
+  sku: z.string().trim().min(1).max(40),
+  name: z.string().trim().min(1).max(120),
+  category: z.string().trim().min(1).max(80),
+  location: z.string().trim().min(1).max(80),
+  condition: z.enum(INVENTORY_CONDITIONS).default("good"),
+  acquiredOn: isoDateSchema,
+  costFcfa: z.number().int().min(0),
+  minQty: z.number().int().min(0).default(1),
+});
+
+export const stockMovementSchema = z.object({
+  itemId: z.string().min(1),
+  direction: z.enum(STOCK_DIRECTIONS),
+  quantity: z.number().int().positive(),
+  reason: z.string().trim().min(1).max(200),
+});
+
+export const calendarEventSchema = z.object({
+  title: z.string().trim().min(1).max(120),
+  kind: z.enum(["event", "holiday", "term"]).default("event"),
+  startDate: isoDateSchema,
+  endDate: isoDateSchema,
+  notes: z.string().trim().max(400).optional().or(z.literal("")),
+});
+
+export const announcementSchema = z.object({
+  title: z.string().trim().min(1).max(120),
+  body: z.string().trim().min(1).max(4000),
+  audience: z.string().trim().min(1).max(80).default("all"),
+  expiresOn: isoDateSchema.optional(),
+});
+
+export const documentTemplateSchema = z.object({
+  name: z.string().trim().min(1).max(80),
+  body: z.string().trim().min(1).max(8000),
+});
+
+export const templateRenderSchema = z.object({
+  pupilId: z.string().min(1).optional(),
+});
+
+export const searchQuerySchema = z.object({
+  q: z.string().trim().min(2).max(80),
+});

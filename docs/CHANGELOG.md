@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.0 — Phase 6 Reports, inventory, admin
+
+- Report catalogue with on-screen table, print, PDF, and Excel (UTF-8 CSV); extra permission checks (payroll, audit, fees).
+- Inventory items with stock in/out movements, derived quantity, low-stock flag.
+- School calendar, role-filtered announcements, letter templates with merge fields.
+- Global search (Ctrl+K) for pupils, staff, and receipts.
+- Role dashboards: management stats, bursar collections, teacher class tasks, secretary admissions queue.
+
 ## 0.5.0 — Phase 5 Academics and attendance
 
 - Assessment types, mark grids, submit-to-lock, Headteacher unlock.

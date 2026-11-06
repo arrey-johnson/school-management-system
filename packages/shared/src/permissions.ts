@@ -76,6 +76,7 @@ export const DEFAULT_ROLE_PERMISSIONS: Record<string, Permission[]> = {
   proprietor: READ_OVERVIEW,
   headteacher: [
     "school:read",
+    "school:update",
     "academic:read",
     "academic:manage",
     "pupils:read",
@@ -87,6 +88,8 @@ export const DEFAULT_ROLE_PERMISSIONS: Record<string, Permission[]> = {
     "attendance:submit",
     "reports:read",
     "reports:export",
+    "inventory:read",
+    "inventory:manage",
     "system:health",
   ],
   bursar: [

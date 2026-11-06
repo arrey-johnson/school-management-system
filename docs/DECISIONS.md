@@ -252,3 +252,15 @@ This supersedes spec section 2’s “bundle Node and run it as a Windows servic
 **Decision:** Creating assessment types and computing term results require `academics:unlock` (Headteacher / Super Admin). Teachers with `academics:marks` create assessments for assigned `class_subjects`, save drafts, and submit to lock.
 
 **Reason:** Weights and max scores change class ranking. Teachers enter marks; they do not define the scheme.
+
+## D039 — Excel export is UTF-8 CSV
+
+**Decision:** Report “Excel” downloads are UTF-8 CSV with a BOM (`text/csv`). PDF uses the existing in-process Helvetica builder. No spreadsheet binary library in v1.
+
+**Reason:** Offline Windows PCs open CSV in Excel. Avoids a heavy xlsx dependency for LAN-only installs.
+
+## D040 — Headteacher manages calendar and stock
+
+**Decision:** Headteacher gains `school:update`, `inventory:read`, and `inventory:manage`. Calendar, announcements, and letter templates use `school:update`. Quantity on inventory items is derived from stock movements only.
+
+**Reason:** The Headteacher runs the school calendar and stores. Direct quantity edits would skip the audit trail.
