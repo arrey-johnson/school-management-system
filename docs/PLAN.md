@@ -2,7 +2,7 @@
 
 Source documents: [SPEC.md](./SPEC.md), [BUILD_PLAN.md](./BUILD_PLAN.md). Decisions that fix ambiguities live in [DECISIONS.md](./DECISIONS.md). System shape lives in [ARCHITECTURE.md](./ARCHITECTURE.md).
 
-Status: Phase 0 planning and docs-only scaffold. Monorepo tooling (pnpm workspaces, TypeScript, lint, tests) is deferred to the start of Phase 1 so this commit stays documentation-only.
+Status: Phase 1 foundation in progress on branch `phase-1-foundation`.
 
 ## 1. Final folder structure
 

@@ -16,6 +16,24 @@ The product name shown in the UI is **Promptstack School Management**. It runs o
 
 ## Status
 
-**Phase 0: planning**
+**Phase 1: foundation** (in progress on `phase-1-foundation`)
 
-No application code yet. The next step is Phase 1 (foundation), after explicit go-ahead.
+## Run locally
+
+```bash
+pnpm install
+pnpm --filter @sms/shared build
+pnpm dev
+```
+
+App API: `http://127.0.0.1:3847` (also proxied from Vite on `5173`).
+
+## Run with Docker (required at the school)
+
+```bash
+docker compose up --build
+```
+
+Then open `http://localhost:3847/setup`. See [docs/DEMO.md](docs/DEMO.md).
+
+`pnpm check` runs lint, typecheck, and unit/integration tests.

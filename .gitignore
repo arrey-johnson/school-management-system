@@ -42,6 +42,11 @@ backups/
 
 # Local data (host pnpm and Docker bind mounts)
 .data/
+.data-e2e/
+
+# Playwright
+playwright-report/
+test-results/
 
 # Uploads
 uploads/

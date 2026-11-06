@@ -216,3 +216,9 @@ This supersedes spec section 2’s “bundle Node and run it as a Windows servic
 **Decision:** After each successful completed unit of work, the agent commits and pushes to the remote without being asked. Incomplete, failed, or secret-bearing changes are not committed. Never force-push or skip hooks.
 
 **Reason:** Owner request (2026-11-06) so school-system progress is always on `origin`. Enforced by `.cursor/rules/git-auto-push.mdc` and a `stop` hook that reminds the agent if the tree is still dirty.
+
+## D033 — Host pnpm vs Docker native addons
+
+**Decision:** `better-sqlite3` and `argon2` are compiled inside the **Node 20 Linux image**. On a Windows host without Python/MSVC (or on Node 24 without prebuilds), `pnpm install --ignore-scripts` is allowed for JS tooling; `pnpm check` that needs SQLite runs with `pnpm check:docker`.
+
+**Reason:** Docker is the production runtime (D031). Native addons must match the Linux container, not the developer’s Windows Node version.

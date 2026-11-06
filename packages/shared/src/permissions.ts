@@ -1,0 +1,143 @@
+export const PERMISSIONS = [
+  "system:settings",
+  "system:users",
+  "system:roles",
+  "system:audit",
+  "system:audit:verify",
+  "system:backup",
+  "system:health",
+  "system:openapi",
+  "system:setup",
+  "school:read",
+  "school:update",
+  "academic:read",
+  "academic:manage",
+  "pupils:read",
+  "pupils:create",
+  "pupils:update",
+  "pupils:medical",
+  "admissions:read",
+  "admissions:manage",
+  "payments:read",
+  "payments:create",
+  "payments:reverse",
+  "payments:approve",
+  "fees:manage",
+  "expenses:read",
+  "expenses:manage",
+  "expenses:approve",
+  "staff:read",
+  "staff:manage",
+  "staff:national_id",
+  "payroll:view",
+  "payroll:prepare",
+  "payroll:approve",
+  "academics:read",
+  "academics:marks",
+  "academics:unlock",
+  "attendance:read",
+  "attendance:submit",
+  "reports:read",
+  "reports:export",
+  "inventory:read",
+  "inventory:manage",
+] as const;
+
+export type Permission = (typeof PERMISSIONS)[number];
+
+export function isPermission(value: string): value is Permission {
+  return (PERMISSIONS as readonly string[]).includes(value);
+}
+
+export const ALL_PERMISSIONS: Permission[] = [...PERMISSIONS];
+
+const READ_OVERVIEW: Permission[] = [
+  "school:read",
+  "academic:read",
+  "pupils:read",
+  "admissions:read",
+  "payments:read",
+  "expenses:read",
+  "staff:read",
+  "academics:read",
+  "attendance:read",
+  "reports:read",
+  "reports:export",
+  "system:audit",
+  "system:health",
+  "payments:approve",
+  "inventory:read",
+];
+
+export const DEFAULT_ROLE_PERMISSIONS: Record<string, Permission[]> = {
+  super_admin: ALL_PERMISSIONS,
+  proprietor: READ_OVERVIEW,
+  headteacher: [
+    "school:read",
+    "academic:read",
+    "academic:manage",
+    "pupils:read",
+    "staff:read",
+    "academics:read",
+    "academics:marks",
+    "academics:unlock",
+    "attendance:read",
+    "attendance:submit",
+    "reports:read",
+    "reports:export",
+    "system:health",
+  ],
+  bursar: [
+    "school:read",
+    "pupils:read",
+    "payments:read",
+    "payments:create",
+    "payments:reverse",
+    "fees:manage",
+    "expenses:read",
+    "expenses:manage",
+    "payroll:view",
+    "reports:read",
+    "reports:export",
+    "system:health",
+  ],
+  secretary: [
+    "school:read",
+    "academic:read",
+    "pupils:read",
+    "pupils:create",
+    "pupils:update",
+    "admissions:read",
+    "admissions:manage",
+    "attendance:read",
+    "reports:read",
+    "system:health",
+  ],
+  teacher: [
+    "school:read",
+    "academic:read",
+    "pupils:read",
+    "academics:read",
+    "academics:marks",
+    "attendance:read",
+    "attendance:submit",
+  ],
+  hr: [
+    "school:read",
+    "staff:read",
+    "staff:manage",
+    "staff:national_id",
+    "payroll:view",
+    "payroll:prepare",
+    "attendance:read",
+    "reports:read",
+    "system:health",
+  ],
+};
+
+export function roleHasPermission(roleSlug: string, permission: Permission, grants: Permission[]): boolean {
+  if (roleSlug === "super_admin") {
+    return true;
+  }
+  return grants.includes(permission);
+}

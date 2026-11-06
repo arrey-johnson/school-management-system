@@ -43,8 +43,8 @@ school-management-system/
 pnpm workspaces, TypeScript strict, ESLint + Prettier, Vitest, Playwright, Drizzle Kit, Docker (Dockerfile + Compose; **mandatory production runtime**, D031), a root script `pnpm check` (typecheck + lint + unit + integration), `pnpm dev` (coding only), `pnpm seed`, `pnpm build`, `pnpm package:win` (installer: image tar + Compose, not host Node).
 
 ## C4. Phase checklist (tick off as we go)
-- [ ] Phase 0: Plan and scaffold. PLAN, DECISIONS, ARCHITECTURE, repo tooling.
-- [ ] Phase 1: Foundation. DB + migrations, config, logging, auth, sessions, lockout, RBAC, audit hash chain, settings, number sequences, UI shell and theme, first-run wizard.
+- [x] Phase 0: Plan and scaffold. PLAN, DECISIONS, ARCHITECTURE, repo tooling.
+- [x] Phase 1: Foundation. DB + migrations, config, logging, auth, sessions, lockout, RBAC, audit hash chain, settings, number sequences, UI shell and theme, first-run wizard.
 - [ ] Phase 2: Structure and pupils. Years/terms, sections/levels/classes/subjects, admissions workflow, pupils, guardians, enrolment, bulk import, search, timeline.
 - [ ] Phase 3: Fees and payments. Fee items, invoices, discounts, payments, allocation, receipts, reversals with approval, arrears, cash-up, period locks, finance dashboard.
 - [ ] Phase 4: Staff, payroll, expenses.

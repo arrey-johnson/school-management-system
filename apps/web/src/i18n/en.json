@@ -1,0 +1,23 @@
+{
+  "appName": "Promptstack School Management",
+  "nav.overview": "Overview",
+  "nav.pupils": "Pupils & Admissions",
+  "nav.fees": "Fees & Payments",
+  "nav.staff": "Staff & Payroll",
+  "nav.academics": "Academics",
+  "nav.attendance": "Attendance",
+  "nav.reports": "Reports",
+  "nav.inventory": "Inventory & Admin",
+  "nav.settings": "Settings",
+  "nav.audit": "Audit log",
+  "nav.health": "System health",
+  "auth.signIn": "Sign in",
+  "auth.username": "Username",
+  "auth.password": "Password",
+  "auth.changePassword": "Change password",
+  "setup.title": "First-run setup",
+  "common.save": "Save",
+  "common.next": "Next",
+  "common.signOut": "Sign out",
+  "common.loading": "Loading…"
+}

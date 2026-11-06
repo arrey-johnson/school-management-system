@@ -1,0 +1,30 @@
+{
+  "name": "promptstack-sms",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @sms/shared build && pnpm --parallel --filter @sms/server --filter @sms/web dev",
+    "build": "pnpm --filter @sms/shared build && pnpm --filter @sms/web build && pnpm --filter @sms/server build",
+    "check": "pnpm --filter @sms/shared build && pnpm lint && pnpm typecheck && pnpm test",
+    "check:docker": "docker compose build && docker compose run --rm --entrypoint sh app -c \"pnpm --filter @sms/shared build && pnpm lint && pnpm typecheck && pnpm test\"",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "lint": "eslint .",
+    "test": "pnpm --filter @sms/shared test && pnpm --filter @sms/server test",
+    "seed": "pnpm --filter @sms/server seed",
+    "e2e": "pnpm --filter @sms/web e2e"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.16.0",
+    "eslint": "^9.16.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "globals": "^15.13.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.0"
+  }
+}

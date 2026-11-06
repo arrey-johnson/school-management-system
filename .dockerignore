@@ -1,0 +1,15 @@
+node_modules
+**/node_modules
+**/dist
+.data
+.data-e2e
+.git
+coverage
+playwright-report
+test-results
+*.db
+*.db-wal
+*.db-shm
+.env
+docs
+installer
