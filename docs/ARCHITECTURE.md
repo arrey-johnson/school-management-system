@@ -1,6 +1,6 @@
 # Architecture
 
-Promptstack School Management is a **single-process local web application**. One Windows PC is the school server. Staff browsers on the LAN are the only clients. There is no cloud runtime for core features.
+Promptstack School Management is a **single-container local web application**. One Windows PC is the school server and **must** run Docker Engine at boot. Staff browsers on the LAN are the only clients. There is no cloud runtime for core features and **no host Node fallback** (D031).
 
 ## 1. System overview
 
@@ -9,24 +9,26 @@ flowchart LR
   subgraph LAN["School LAN"]
     T1["Staff PC browsers"]
     T2["Teacher / bursar / secretary"]
-    S["Windows school server"]
+    S["Windows school server\nDocker Engine at boot"]
   end
 
   T1 --> S
   T2 --> S
 
-  subgraph Server["One Node 20 process"]
-    W["Static web app\nReact 18 + Vite build"]
+  subgraph Docker["Compose: service app"]
+    C["Container Node 20"]
+    W["Static web app"]
     A["Fastify /api/v1"]
-    J["Jobs\nbackup, integrity"]
+    J["Jobs: backup, integrity"]
   end
 
-  S --> W
-  S --> A
-  S --> J
+  S --> Docker
+  C --> W
+  C --> A
+  C --> J
 
-  subgraph Disk["C:\\ProgramData\\PromptstackSMS"]
-    DB["SQLite WAL\napp.db"]
+  subgraph Disk["Host: C:\\ProgramData\\PromptstackSMS"]
+    DB["SQLite WAL app.db"]
     U["uploads"]
     L["logs"]
     B["backups *.sms-backup"]
@@ -42,24 +44,33 @@ flowchart LR
 - **apps/web**: React 18, React Router, TanStack Query/Table, RHF+Zod, Tailwind (purple/white tokens), Recharts, i18n.
 - **apps/server**: Fastify, Zod, sessions, RBAC, modules, pdfmake, exceljs, jobs.
 - **packages/shared**: schemas, permission catalogue, money helpers, grading/ranking (pure functions).
-- **installer/** (Phase 8): bundled Node, NSSM service, firewall, desktop shortcut, Inno Setup.
+- **Docker** (Phase 1 files, production runtime): `Dockerfile` + `docker-compose.yml`. One process in one container.
+- **installer/** (Phase 8): verifies Docker, `docker load` of a bundled image (offline), data dir, firewall, boot wrapper that starts Compose, desktop shortcut.
 
 Clients never talk to SQLite. All writes go through the API so permissions, validation, audit, and sequences stay in one place.
 
-## 2. Windows server deployment
+## 2. Windows server deployment (Docker-mandatory)
 
-Target: one Windows 10/11 PC that stays on during school hours (and preferably overnight for scheduled backup).
+Target: one Windows 10/11 PC that stays on during school hours (and preferably overnight for scheduled backup). **Docker Engine must be installed and set to start at boot.** If Docker is down, the school system is down.
+
+```mermaid
+flowchart LR
+  B["Browser :3847"] --> H["Host publishes 3847"]
+  H --> C["Container promptstack-sms"]
+  C --> V["Bind mount\nC:\\ProgramData\\PromptstackSMS"]
+```
 
 | Piece | Behaviour |
 |---|---|
-| Installer | Inno Setup copies Node + app into Program Files, creates `C:\ProgramData\PromptstackSMS\`, writes a machine session secret, opens TCP 3847 on Private networks, registers NSSM service `PromptstackSMS`, shortcut “Open School System” |
-| Service | Auto-start, restart on crash, stdout/stderr to `logs\` with rotation |
-| Process | `node apps/server` (or compiled entry) serving static UI + API |
-| Upgrade | New installer stops service → copies files → starts service. On start: pre-migration backup, Drizzle migrate, then listen. Failure: do not listen; keep previous backup |
-| Server status | Admin page shows hostname, LAN IPs, `http://<ip>:3847`, QR code, version, last backup, disk free |
-| Offline | No phone-home. Optional Drive upload is a queued job |
+| Prerequisites | Win10/11 64-bit, virtualization on, WSL2 if Desktop, 8 GB RAM min (16 GB recommended), Docker start-on-boot |
+| Installer | Fails if `docker info` fails. `docker load` image tar (no pull). Writes Compose files, `C:\ProgramData\PromptstackSMS\`, session secret, firewall TCP 3847, boot task/NSSM wrapper for `docker compose up -d`, shortcut “Open School System” |
+| Process | Only the Compose service `app` (`restart: unless-stopped`). Wrapper waits for the engine, then starts Compose. **Not** `node` on the host |
+| Data | Host bind mount: `data\app.db`, `uploads\`, `logs\`, `backups\`. Never store the live DB in the image |
+| Upgrade | Load new image → compose up. On start: pre-migration backup, Drizzle migrate, then listen. Failure: do not listen; keep previous backup and previous image tag |
+| Server status | Admin page shows hostname, LAN IPs, `http://<ip>:3847`, QR code, version, last backup, disk free, **Docker/container health** |
+| Offline | No phone-home. Image travels with the installer. Optional Drive upload is a queued job |
 
-Dev machines use `pnpm dev` (Vite + Fastify) with `.data/` instead of ProgramData.
+Dev: `pnpm dev` is allowed for coding. Anything that must match school behaviour is Compose against a `.data/` bind mount. Do not open the same SQLite file from host Node and a container at once.
 
 ## 3. Request flow
 
@@ -148,7 +159,7 @@ flowchart TD
   Preview --> Type[Type confirmation phrase]
   Type --> Safety[Automatic safety backup of current data]
   Safety --> Swap[Replace db + uploads]
-  Swap --> Restart[Restart service]
+  Swap --> Restart[Restart Compose stack]
 ```
 
 Rules:

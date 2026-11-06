@@ -1,0 +1,31 @@
+---
+description: Auto commit and push after successful work
+alwaysApply: true
+---
+
+# Git: auto commit and push on success
+
+The product owner requires every **successful** completed unit of work to be committed and pushed. Do not wait to be asked.
+
+## When to commit and push
+
+- The requested work for this turn is done (docs, code, or both).
+- You did not leave the tree in a broken half-edit on purpose.
+- For application code: typecheck, lint, and relevant tests passed (or there is no code yet).
+- There are real changes (`git status` is not clean).
+
+## When not to commit
+
+- The task failed, is blocked, or is still in progress.
+- The only changes are local secrets, `.env`, credentials, or `*.db`.
+- `git status` is clean.
+
+## How
+
+1. `git status`, `git diff`, and `git log -5 --oneline` (skip log if no commits yet).
+2. Stage intended files. Never `git add` `.env`, keys, or database files.
+3. Commit with a conventional message focused on why (e.g. `docs:`, `feat:`, `fix:`). Do not update git config. If identity is missing, use a one-shot `git -c user.name=... -c user.email=...` from `gh api user`.
+4. `git push -u origin HEAD`. Never `--force`, never `--no-verify`.
+5. If push fails on auth, stop and report the exact error. Never ask for a password or token.
+
+This project rule overrides the default “only commit when asked”.

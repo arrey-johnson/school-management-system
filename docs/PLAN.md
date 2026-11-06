@@ -78,13 +78,17 @@ school-management-system/
         money/
         grading/
         constants/
-  installer/                      # Phase 8: service, Inno Setup, firewall
+  installer/                      # Phase 8: Docker load, Compose boot wrapper, firewall, Inno Setup
+  docker/
+  Dockerfile                      # Phase 1: Node 20, one-process image
+  docker-compose.yml              # Phase 1: app + data volume, port 3847
+  .dockerignore                   # Phase 1
   docs/
   assets/                         # logo-white.png (later), Inter, icons
   scripts/                        # seed, backup CLI, dev helpers
 ```
 
-Production data (not in the repo) lives under `C:\ProgramData\PromptstackSMS\` (`data\`, `uploads\`, `logs\`, `backups\`). Development uses a local data directory ignored by git.
+Production data lives on the **Windows host** under `C:\ProgramData\PromptstackSMS\` (`data\`, `uploads\`, `logs\`, `backups\`) and is bind-mounted into the container. Development uses `.data/` (gitignored), also bind-mounted under Compose. The live database is never stored only inside an image.
 
 ## 2. Database schema outline per module
 
@@ -179,14 +183,16 @@ Balances are **derived** from invoice lines + adjustments + allocations. A night
 |---|---|---|
 | Money correctness and gap-free receipt numbers under concurrent cashiers | Wrong balances, duplicate or skipped receipt numbers, lost trust | INTEGER FCFA only; single SQLite writer transactions; `number_sequences` updated in the same txn as receipt insert; unique receipt number; concurrency test in Phase 3; idempotency keys |
 | Permission leaks (teacher scope, medical notes, national ID, salary) | Data protection failure | Server-side RBAC on every route; query-level teacher scope filters; field-level omit for restricted columns; integration tests for denial cases |
-| SQLite as a Windows service (locking, `ProgramData` ACLs, WAL files) | Corrupt or unwritable DB after reboot | WAL + `synchronous=FULL`; service runs as Local System or dedicated user with ACL on data dir; single Node process; busy_timeout; integrity check job; never copy live files for backup (use SQLite backup API) |
+| SQLite on a Docker bind mount (locking, `ProgramData` ACLs, WAL files) | Corrupt or unwritable DB after reboot | WAL + `synchronous=FULL`; one container writer; host-local bind mount only; busy_timeout; integrity check job; never copy live files for backup (use SQLite backup API) |
 | Backup/restore unreliability | Unrecoverable school year | Snapshot via backup API + files + manifest + checksum; post-backup open-read-only integrity check; restore always takes a safety backup first; 48h backup warning; Phase 7 round-trip e2e |
 | Report-card edge cases (ties, missing marks, coefficients, nursery comments) | Wrong ranks printed | Pure functions in `packages/shared` with 85%+ coverage; configurable tie rule (min rank / dense); missing marks exclude or zero per setting; snapshot results at lock time |
 | Migration safety on upgrade | Broken production after installer update | Pre-migration automatic backup; Drizzle versioned migrations; migration tests with data; app refuses to start if migration fails; installer rollback notes |
-| Installer on clean Windows 10/11 | Failed handover | Phase 8: Inno Setup + bundled Node + firewall + service; verify on clean Win10 and Win11 VMs |
+| Installer on clean Windows 10/11 with Docker | Failed handover | Phase 8: Inno Setup + Docker prerequisite check + bundled image tar + firewall + Compose boot wrapper; verify on clean Win10 and Win11 VMs with Docker at boot |
 | Scope creep | Delayed fees module (the highest-correctness path) | Phases 0–8 as written; no extra modules until after Phase 8; school-specific names/fees captured as settings not code forks |
 | Optional Google Drive coupling | Offline breakage | Feature off by default; queue/retry; core backup is local |
 | Power cuts during a write | Partial financial records | WAL + FULL sync; transactional payment+receipt+allocation; graceful shutdown |
+| Docker Engine not running after reboot | Whole school system offline | D031: engine start-at-boot is mandatory; installer/boot wrapper waits for `docker info` then Compose; server status shows container health; **no native Node fallback** (accepted) |
+| Host and container both opening the same SQLite file | Corruption / SQLITE_BUSY | One writer process only; never `pnpm dev` and Compose against the same `.data/` DB together |
 
 ## 4. Assumptions and chosen defaults
 
@@ -201,8 +207,8 @@ Documented formally in DECISIONS.md. Summary:
 - UUIDv7 primary keys; admission numbers from `number_sequences` with default `ABC-{YEAR}-{SEQ:4}`.
 - Pagination: page-based (`page`, `pageSize` default 50, max 200) plus stable `sort`; cursor optional later for activity feeds.
 - Receipt PDF: **pdfmake** (layout-as-data, good for receipts and report cards without a browser).
-- Windows service: **NSSM** from the installer (simpler operations than node-windows).
-- One Node process serves API + built web static files.
+- Production: **Docker Compose only** (D031). Engine at boot. No host Node. NSSM may wrap Compose only.
+- One Node process **inside the container** serves API + built web static files.
 - Default language English; French files exist from Phase 1 for nav and common labels.
 - Discount approval threshold default **FCFA 10,000**; Super Admin can change it.
 - Report cards **not** withheld for unpaid fees until the school turns the setting on.
@@ -210,6 +216,7 @@ Documented formally in DECISIONS.md. Summary:
 - Bulk promotion undo window: **48 hours** or until any mark/payment posts against the new enrolment, whichever first.
 - Demo accounts exist only in seed/demo builds; production installer is clean-install + wizard.
 - Logo path reserved: `assets/logo-white.png` (added later).
+- Docker Compose is mandatory at the school and for production-shaped runs (D031). `pnpm dev` is coding-only.
 
 ## 5. Task estimate per phase
 
@@ -218,14 +225,14 @@ Estimates are engineering days for one senior full-stack engineer, including tes
 | Phase | Scope | Est. days | Notes |
 |---|---|---|---|
 | 0 Plan | Spec on disk, PLAN, DECISIONS, ARCHITECTURE, gitignore/readme scaffold | 0.5 | This commit. Tooling moved to Phase 1 start. |
-| 1 Foundation | Monorepo tooling, DB, auth, RBAC, audit chain, settings, sequences, UI shell, wizard | 8–10 | First runnable app |
+| 1 Foundation | Monorepo tooling, Docker image/compose, DB, auth, RBAC, audit chain, settings, sequences, UI shell, wizard | 8–10 | First runnable app |
 | 2 Structure and pupils | Years/terms/classes, admissions, pupils, guardians, enrolment, import, search | 8–10 | |
 | 3 Fees and payments | Structures, invoices, payments, receipts, reversals, arrears, cash-up, locks | 12–15 | Heaviest tests |
 | 4 Staff, payroll, expenses | HR, payroll maker-checker, expenses/budgets | 8–10 | |
 | 5 Academics and attendance | Marks, grading engine, report cards, attendance | 10–12 | |
 | 6 Reports, inventory, admin | Full report set, inventory, calendar, search, dashboards | 6–8 | |
 | 7 Backup, hardening | Backup/restore, Drive optional, health, security, 5k-pupil perf | 6–8 | |
-| 8 Windows packaging | Service, Inno Setup, upgrade, VM verification, handover docs | 5–7 | |
-| **Total** | | **~64–81 days** | Plus review buffers between phases |
+| 8 Windows packaging | Docker-at-boot, image tar, Compose wrapper, Inno Setup, upgrade, VM verification, handover docs | 6–8 | Docker-mandatory (D031) |
+| **Total** | | **~65–82 days** | Plus review buffers between phases |
 
-Phase 1 start tasks (when “start Phase 1” is given): init pnpm workspaces, TypeScript strict, ESLint/Prettier, Vitest, Playwright, Drizzle Kit, `pnpm check` / `pnpm dev` / `pnpm seed` / `pnpm build`.
+Phase 1 start tasks (when “start Phase 1” is given): init pnpm workspaces, TypeScript strict, ESLint/Prettier, Vitest, Playwright, Drizzle Kit, Dockerfile + Compose, `pnpm check` / `pnpm dev` / `pnpm seed` / `pnpm build`.

@@ -10,6 +10,8 @@ Core principles: accuracy, traceability, simplicity for non-technical staff, wor
 
 ## 2. Deployment model (critical)
 
+> **Implementation override (D031, 2026-11-06):** Production runs **only** as Docker Compose on the school server. Docker Engine must start at boot. There is no host Node process and no native-Node fallback. The installer loads a bundled image (offline) and starts Compose; NSSM may wrap Compose, not Node. LAN clients are unchanged (browser only). See `docs/DECISIONS.md` D031 and `docs/ARCHITECTURE.md`.
+
 - One designated Windows 10/11 computer is the **server**. It hosts the app and the database.
 - Other staff PCs open the app in a browser at `http://<server-name-or-ip>:<port>` on the school network. No client installation.
 - Core operation never requires internet. Internet is only used for the *optional* "upload backup to Google Drive" feature, which must fail gracefully and queue/retry.
@@ -230,6 +232,6 @@ success:#2E8B57   warning:#B7791F   danger:#C0392B
 
 **Phase 7 – Backup, recovery, hardening.** Manual and scheduled backups, validation, restore wizard, optional Google Drive upload, audit integrity verification, system health page, security review, performance pass with 5,000-pupil dataset.
 
-**Phase 8 – Windows packaging and handover.** Windows service, Inno Setup installer, upgrade/migration flow, firewall setup, desktop shortcut, install and user docs, demo and clean-install builds, final e2e run on a clean Windows 10 and Windows 11 VM.
+**Phase 8 – Windows packaging and handover.** Docker-at-boot, bundled image tarball, Compose boot wrapper, Inno Setup installer, upgrade/migration flow, firewall setup, desktop shortcut, install and user docs, demo and clean-install builds, final e2e run on a clean Windows 10 and Windows 11 VM with Docker Engine starting at boot. (D031: no host Node.)
 
 **Definition of done for every phase:** all tests pass, no TypeScript errors, no lint errors, features reachable from the UI, permissions enforced server-side, audit entries verified, docs updated, short demo script written in `docs/DEMO.md`.

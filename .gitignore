@@ -40,6 +40,9 @@ logs/
 backups/
 *.sms-backup
 
+# Local data (host pnpm and Docker bind mounts)
+.data/
+
 # Uploads
 uploads/
 

@@ -4,6 +4,8 @@ Locally installed school administration software for **ALL BRIGHT CHILDREN**, de
 
 The product name shown in the UI is **Promptstack School Management**. It runs on one Windows 10/11 school-server PC and is used from other PCs on the same LAN through a browser, with no internet required for core operation.
 
+**Docker is mandatory** on that server: Docker Engine must start at boot, and the app runs only as Compose. If Docker is down, the system is down. There is no host-Node install path. Staff PCs still need only a browser.
+
 ## Documentation
 
 - [Product specification](docs/SPEC.md)

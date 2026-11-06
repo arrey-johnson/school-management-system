@@ -30,7 +30,7 @@ Each entry is a choice we will implement unless a later dated entry supersedes i
 
 **Decision:** Fastify serves `/api/v1` and the Vite production build as static files. Development: Vite dev server proxies API.
 
-**Reason:** Spec: only one process on the school PC. Simpler Windows service, firewall, and backup story.
+**Reason:** Spec: only one app process. That process runs **inside the Compose container** (D031). Simpler firewall (one published port) and backup story (host data dir).
 
 ## D006 — HTTP on the LAN in v1 (no TLS)
 
@@ -52,9 +52,9 @@ Each entry is a choice we will implement unless a later dated entry supersedes i
 
 ## D009 — NSSM for the Windows service
 
-**Decision:** Installer registers the app with **NSSM** (Non-Sucking Service Manager), auto-start, auto-restart. node-windows remains a fallback if NSSM packaging is blocked.
+**Decision (superseded by D031):** Originally: installer registers Node with NSSM; node-windows as fallback.
 
-**Reason:** Spec allows either. NSSM is the usual operational choice on school PCs (recovery, stdout to log files, restart delay).
+**Superseded:** Production does not run Node on the host. NSSM (or equivalent) may still exist in Phase 8 only as a **wrapper that starts Docker Compose** after the engine is up — never as a host Node process. There is no native-Node fallback.
 
 ## D010 — Data directory
 
@@ -66,7 +66,7 @@ Each entry is a choice we will implement unless a later dated entry supersedes i
 
 **Decision:** `pdfmake` for receipts, report cards, letters. `exceljs` for Excel/CSV.
 
-**Reason:** Spec allows pdfmake or react-pdf. pdfmake generates on the server without a browser, which matches a headless Windows service.
+**Reason:** Spec allows pdfmake or react-pdf. pdfmake generates in the container without a browser, which matches a headless Compose service.
 
 ## D012 — Page-based list APIs
 
@@ -181,3 +181,38 @@ Each entry is a choice we will implement unless a later dated entry supersedes i
 **Decision:** Self-host Inter in `assets/` / web public files. No CDN.
 
 **Reason:** Offline requirement.
+
+## D031 — Docker is the only production runtime (no native fallback)
+
+**Decision:** The school server **must** run Docker Engine (Docker Desktop or Engine-in-WSL) **at boot**. The application runs **only** as Docker Compose. If the engine is down, the school system is down. There is **no** host Node / NSSM-Node / “run without Docker” path.
+
+This supersedes spec section 2’s “bundle Node and run it as a Windows service” and supersedes the original D009/D031 optional-Docker wording. Confirmed by the product owner (2026-11-06): Docker handles everything at install time and at the school.
+
+**Runtime:**
+- One Compose service `app`: Node 20, Fastify + static UI, `restart: unless-stopped`, port **3847:3847**.
+- No extra database container. SQLite remains a file on a **host bind mount**.
+- Data stays at `C:\ProgramData\PromptstackSMS\` on the Windows host (D010). The container must not own the only copy of the DB.
+- `better-sqlite3` is compiled **inside the Linux image**. Host `node_modules` are never copied in.
+- SQLite locking: local disk only; never two writers (host `pnpm` and container) on the same file.
+
+**School machine:**
+- Windows 10/11, 64-bit, virtualization enabled, WSL2 if using Docker Desktop, **8 GB RAM minimum (16 GB recommended)**.
+- Docker set to **start on boot** (Desktop start-on-login plus the server account left logged in, auto-logon, or Engine as a boot service). Phase 8 scripts wait until `docker info` succeeds, then `docker compose up -d`.
+- Installer **fails closed** if Docker is missing or the engine is not running.
+
+**Offline / installer (Phase 8):**
+- No `docker pull` at the school. Ship a pre-built image tarball; installer runs `docker load`.
+- Creates data dir, session secret, firewall rule for TCP 3847, Compose files, boot wrapper, desktop shortcut “Open School System”.
+- Upgrade: load new image → compose up → app takes pre-migration backup then migrates. Image replace is not a data wipe because data is on the host mount.
+
+**Development:**
+- Phase 1 adds `Dockerfile`, `docker-compose.yml`, `.dockerignore`.
+- `pnpm dev` on the host is allowed for coding only. Production-shaped behaviour is Compose. Demo and handover always use Compose.
+
+**Reason:** Owner requires one runtime everywhere so install, upgrades, and native addons match what we develop against. LAN clients stay browsers. Spec NFR “works offline” is met by shipping the image, not by pulling it. The cost is operational: Hyper-V/WSL, RAM, and “Docker didn’t start after reboot” become first-line failures; that is accepted.
+
+## D032 — Auto commit and push after successful work
+
+**Decision:** After each successful completed unit of work, the agent commits and pushes to the remote without being asked. Incomplete, failed, or secret-bearing changes are not committed. Never force-push or skip hooks.
+
+**Reason:** Owner request (2026-11-06) so school-system progress is always on `origin`. Enforced by `.cursor/rules/git-auto-push.mdc` and a `stop` hook that reminds the agent if the tree is still dirty.
