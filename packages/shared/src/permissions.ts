@@ -66,6 +66,8 @@ const READ_OVERVIEW: Permission[] = [
   "system:audit",
   "system:health",
   "payments:approve",
+  "payroll:approve",
+  "expenses:approve",
   "inventory:read",
 ];
 

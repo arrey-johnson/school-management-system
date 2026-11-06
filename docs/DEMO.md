@@ -1,11 +1,7 @@
-# Demo — Phase 3 Fees and payments
+# Demo — Phase 4 Staff, payroll, expenses
 
-1. `docker compose up --build` and finish first-run setup if needed.
-2. **School structure**: add **Form 1 A**.
-3. **Fees & Payments**: add fee item `TUI` / Tuition / `50000`.
-4. **Pupils**: enrol Amina Ngono into Form 1 A (invoice is created automatically).
-5. On **Fees & Payments**, search `Amina` (or `ABC-2026-0001`), pay `20000` cash. A receipt PDF opens as `RC-00001`. Pay the remaining `30000` as `RC-00002`. Balance should be paid.
-6. Sign in as a **bursar**, record a payment, request reverse. Sign in as **admin** and approve. The maker (bursar) cannot approve their own reversal.
-7. Add a **FCFA 15,000** discount — it stays pending until a second user approves.
-8. Close cash-up for today; further payments that day by the same cashier are blocked until reopen is approved.
-9. Overview shows outstanding fees.
+1. Hard-refresh `http://localhost:3847` after `docker compose up --build`.
+2. **Staff**: add Mary Teacher with a national ID. Sign in as **headteacher** — the ID column is blank. Sign in as **HR** — the ID is visible.
+3. **Payroll**: add a statutory percent deduction (label it configurable), save a salary structure (base `200000` + 4%), optional advance, **Calculate run** for `2026-11`.
+4. HR cannot approve their own run. Sign in as Super Admin or Proprietor and approve, then mark paid / lock. Open the payslip PDF.
+5. **Expenses**: bursar adds category Utilities, a draft ENEO bill, submits. Bursar cannot approve. Admin/proprietor approves; bursar marks paid.

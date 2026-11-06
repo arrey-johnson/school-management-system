@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0 — Phase 4 Staff, payroll, expenses
+
+- Staff directory with restricted national ID, status history, assignments, leave, attendance.
+- Salary structures (fixed and percent components), advances, monthly payroll run with maker-checker, payslip PDF.
+- Expenses: categories, budgets with over-budget warning, draft → submitted → approved → paid.
+
 ## 0.3.0 — Phase 3 Fees and payments
 
 - Fee items, auto-invoice on enrolment, integer FCFA ledgers, oldest-first allocation.

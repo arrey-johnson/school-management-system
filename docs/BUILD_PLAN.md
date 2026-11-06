@@ -47,7 +47,7 @@ pnpm workspaces, TypeScript strict, ESLint + Prettier, Vitest, Playwright, Drizz
 - [x] Phase 1: Foundation. DB + migrations, config, logging, auth, sessions, lockout, RBAC, audit hash chain, settings, number sequences, UI shell and theme, first-run wizard.
 - [x] Phase 2: Structure and pupils. Years/terms, sections/levels/classes/subjects, admissions workflow, pupils, guardians, enrolment, bulk import, search, timeline.
 - [x] Phase 3: Fees and payments. Fee items, invoices, discounts, payments, allocation, receipts, reversals with approval, arrears, cash-up, period locks, finance dashboard.
-- [ ] Phase 4: Staff, payroll, expenses.
+- [x] Phase 4: Staff, payroll, expenses.
 - [ ] Phase 5: Academics and attendance. Assessments, mark entry, computation engine, report cards, attendance, reports.
 - [ ] Phase 6: Reports, inventory, admin pages, global search, role dashboards.
 - [ ] Phase 7: Backup, recovery, hardening, performance pass, security review.

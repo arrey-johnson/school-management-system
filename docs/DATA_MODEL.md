@@ -1,18 +1,14 @@
-# Data model (Phase 3)
+# Data model (Phase 4)
 
-Foundation, pupils, and fees. Money columns are INTEGER FCFA. Payments, allocations, receipts, reversals, adjustments, and audit rows are append-only.
+Staff, payroll, and expenses sit beside the Phase 3 fee ledger. Salary and expense amounts are INTEGER FCFA. Finalised payroll runs are not edited in place (next-period correction).
 
 ```mermaid
 erDiagram
-  pupils ||--o{ pupil_invoices : billed
-  pupil_invoices ||--o{ invoice_lines : contains
-  fee_items ||--o{ invoice_lines : snapshotted
-  invoice_lines ||--o{ adjustments : corrected
-  pupils ||--o{ payments : pays
-  payments ||--o{ payment_allocations : splits
-  invoice_lines ||--o{ payment_allocations : receives
-  payments ||--o| receipts : numbered
-  payments ||--o{ reversals : voided
+  staff ||--o{ staff_status_history : tracks
+  staff ||--o{ staff_assignments : assigned
+  staff ||--o{ salary_structures : paid
+  salary_structures ||--o{ salary_structure_lines : components
+  payroll_runs ||--o{ payroll_lines : contains
+  expense_categories ||--o{ expenses : classified
+  expense_categories ||--o{ budgets : capped
 ```
-
-Balances = invoice lines + applied adjustments − net allocations. Receipt numbers come from `number_sequences.receipt` in the same transaction as the payment.

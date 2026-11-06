@@ -468,3 +468,156 @@ export const idempotencyKeys = sqliteTable("idempotency_keys", {
   responseJson: text("response_json").notNull(),
   createdAt: text("created_at").notNull(),
 });
+
+export const staff = sqliteTable("staff", {
+  id: text("id").primaryKey(),
+  givenName: text("given_name").notNull(),
+  familyName: text("family_name").notNull(),
+  sex: text("sex").notNull(),
+  dob: text("dob"),
+  nationalId: text("national_id"),
+  phone: text("phone").notNull(),
+  email: text("email"),
+  address: text("address"),
+  department: text("department"),
+  position: text("position").notNull(),
+  employmentType: text("employment_type").notNull(),
+  hireDate: text("hire_date").notNull(),
+  emergencyContact: text("emergency_contact"),
+  userId: text("user_id"),
+  status: text("status").notNull(),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+  createdBy: text("created_by"),
+  updatedBy: text("updated_by"),
+});
+
+export const staffStatusHistory = sqliteTable("staff_status_history", {
+  id: text("id").primaryKey(),
+  staffId: text("staff_id").notNull(),
+  status: text("status").notNull(),
+  reason: text("reason"),
+  at: text("at").notNull(),
+  actorUserId: text("actor_user_id"),
+});
+
+export const staffAssignments = sqliteTable("staff_assignments", {
+  id: text("id").primaryKey(),
+  staffId: text("staff_id").notNull(),
+  academicYearId: text("academic_year_id").notNull(),
+  role: text("role").notNull(),
+  classId: text("class_id"),
+  classSubjectId: text("class_subject_id"),
+  createdAt: text("created_at").notNull(),
+  createdBy: text("created_by"),
+});
+
+export const leaves = sqliteTable("leaves", {
+  id: text("id").primaryKey(),
+  staffId: text("staff_id").notNull(),
+  type: text("type").notNull(),
+  startDate: text("start_date").notNull(),
+  endDate: text("end_date").notNull(),
+  reason: text("reason"),
+  status: text("status").notNull(),
+  createdAt: text("created_at").notNull(),
+  createdBy: text("created_by"),
+});
+
+export const staffAttendance = sqliteTable("staff_attendance", {
+  id: text("id").primaryKey(),
+  staffId: text("staff_id").notNull(),
+  day: text("day").notNull(),
+  mark: text("mark").notNull(),
+  createdAt: text("created_at").notNull(),
+  createdBy: text("created_by"),
+});
+
+export const salaryComponentTypes = sqliteTable("salary_component_types", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  kind: text("kind").notNull(),
+  mode: text("mode").notNull(),
+  statutory: integer("statutory", { mode: "boolean" }).notNull().default(false),
+  createdAt: text("created_at").notNull(),
+});
+
+export const salaryStructures = sqliteTable("salary_structures", {
+  id: text("id").primaryKey(),
+  staffId: text("staff_id").notNull(),
+  baseFcfa: integer("base_fcfa").notNull(),
+  effectiveFrom: text("effective_from").notNull(),
+  createdAt: text("created_at").notNull(),
+  createdBy: text("created_by"),
+});
+
+export const salaryStructureLines = sqliteTable("salary_structure_lines", {
+  id: text("id").primaryKey(),
+  structureId: text("structure_id").notNull(),
+  componentTypeId: text("component_type_id").notNull(),
+  value: integer("value").notNull(),
+});
+
+export const advancesLoans = sqliteTable("advances_loans", {
+  id: text("id").primaryKey(),
+  staffId: text("staff_id").notNull(),
+  principalFcfa: integer("principal_fcfa").notNull(),
+  remainingFcfa: integer("remaining_fcfa").notNull(),
+  installmentFcfa: integer("installment_fcfa").notNull(),
+  createdAt: text("created_at").notNull(),
+  createdBy: text("created_by"),
+});
+
+export const payrollRuns = sqliteTable("payroll_runs", {
+  id: text("id").primaryKey(),
+  yearMonth: text("year_month").notNull().unique(),
+  status: text("status").notNull(),
+  preparedBy: text("prepared_by"),
+  approvedBy: text("approved_by"),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+});
+
+export const payrollLines = sqliteTable("payroll_lines", {
+  id: text("id").primaryKey(),
+  runId: text("run_id").notNull(),
+  staffId: text("staff_id").notNull(),
+  snapshotJson: text("snapshot_json").notNull(),
+  grossFcfa: integer("gross_fcfa").notNull(),
+  deductionsFcfa: integer("deductions_fcfa").notNull(),
+  netFcfa: integer("net_fcfa").notNull(),
+});
+
+export const payslips = sqliteTable("payslips", {
+  id: text("id").primaryKey(),
+  payrollLineId: text("payroll_line_id").notNull().unique(),
+  createdAt: text("created_at").notNull(),
+});
+
+export const expenseCategories = sqliteTable("expense_categories", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull().unique(),
+  createdAt: text("created_at").notNull(),
+});
+
+export const expenses = sqliteTable("expenses", {
+  id: text("id").primaryKey(),
+  categoryId: text("category_id").notNull(),
+  entryDate: text("entry_date").notNull(),
+  amountFcfa: integer("amount_fcfa").notNull(),
+  description: text("description").notNull(),
+  vendor: text("vendor"),
+  method: text("method").notNull(),
+  status: text("status").notNull(),
+  createdAt: text("created_at").notNull(),
+  createdBy: text("created_by"),
+  decidedBy: text("decided_by"),
+});
+
+export const budgets = sqliteTable("budgets", {
+  id: text("id").primaryKey(),
+  categoryId: text("category_id").notNull(),
+  academicYearId: text("academic_year_id").notNull(),
+  amountFcfa: integer("amount_fcfa").notNull(),
+  createdAt: text("created_at").notNull(),
+});

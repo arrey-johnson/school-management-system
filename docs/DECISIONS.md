@@ -234,3 +234,15 @@ This supersedes spec section 2’s “bundle Node and run it as a Windows servic
 **Decision:** Receipts are generated in-process as a one-page PDF (Helvetica text: school, pupil, lines, balance, verification code). Reprint sets status `duplicate_reprint` and prints DUPLICATE. Reversal watermarks REVERSED. A later pass may swap the builder for full pdfmake templates without changing numbers or ledger rules.
 
 **Reason:** D011 still holds; Phase 3 ships a printable file the bursar can open offline. Layout polish is not allowed to delay money correctness.
+
+## D036 — Proprietor approves payroll and expenses
+
+**Decision:** Default Proprietor grants include `payroll:approve` and `expenses:approve` (already had `payments:approve`). HR prepares payroll; bursar manages expenses; neither can approve their own record.
+
+**Reason:** Maker-checker needs a second role besides Super Admin on a typical school staff list.
+
+## D037 — Payroll percents round to whole FCFA
+
+**Decision:** Percent components use `Math.round(base * percent / 100)`. Absence deduction is `absentDays * round(base / 30)` in that calendar month. Statutory flags are labels only; rates are settings, not Cameroon legal advice.
+
+**Reason:** XAF has no subunits. Rounding is explicit so cashiers and HR can recast a payslip by hand.

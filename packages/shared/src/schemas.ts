@@ -248,3 +248,97 @@ export const periodLockSchema = z.object({
 export const optionalFeeLineSchema = z.object({
   feeItemId: z.string().min(1),
 });
+
+export const STAFF_STATUSES = ["active", "on_leave", "resigned", "terminated"] as const;
+export const STAFF_ATTENDANCE_MARKS = ["present", "late", "absent", "leave"] as const;
+export const EXPENSE_STATUSES = ["draft", "submitted", "approved", "paid"] as const;
+export const PAYROLL_STATUSES = ["draft", "calculated", "reviewed", "approved", "paid", "locked"] as const;
+
+export const staffCreateSchema = z.object({
+  givenName: z.string().trim().min(1).max(80),
+  familyName: z.string().trim().min(1).max(80),
+  sex: z.enum(["F", "M"]),
+  dob: isoDateSchema.optional(),
+  nationalId: z.string().trim().max(40).optional().or(z.literal("")),
+  phone: z.string().trim().min(6).max(40),
+  email: z.string().trim().email().max(120).optional().or(z.literal("")),
+  address: z.string().trim().max(400).optional().or(z.literal("")),
+  department: z.string().trim().max(80).optional().or(z.literal("")),
+  position: z.string().trim().min(1).max(80),
+  employmentType: z.enum(["full_time", "part_time", "contract"]).default("full_time"),
+  hireDate: isoDateSchema,
+  emergencyContact: z.string().trim().max(160).optional().or(z.literal("")),
+  userId: z.string().min(1).optional(),
+});
+
+export const staffStatusSchema = z.object({
+  status: z.enum(STAFF_STATUSES),
+  reason: z.string().trim().min(1).max(400),
+});
+
+export const staffAssignmentSchema = z.object({
+  staffId: z.string().min(1),
+  academicYearId: z.string().min(1),
+  role: z.enum(["class_teacher", "subject_teacher"]),
+  classId: z.string().min(1).optional(),
+  classSubjectId: z.string().min(1).optional(),
+});
+
+export const leaveCreateSchema = z.object({
+  staffId: z.string().min(1),
+  type: z.string().trim().min(1).max(40),
+  startDate: isoDateSchema,
+  endDate: isoDateSchema,
+  reason: z.string().trim().max(400).optional().or(z.literal("")),
+});
+
+export const staffAttendanceSchema = z.object({
+  staffId: z.string().min(1),
+  day: isoDateSchema,
+  mark: z.enum(STAFF_ATTENDANCE_MARKS),
+});
+
+export const salaryComponentTypeSchema = z.object({
+  name: z.string().trim().min(1).max(80),
+  kind: z.enum(["allowance", "deduction"]),
+  mode: z.enum(["fixed", "percent"]),
+  statutory: z.boolean().default(false),
+});
+
+export const salaryStructureSchema = z.object({
+  staffId: z.string().min(1),
+  baseFcfa: z.number().int().positive(),
+  effectiveFrom: isoDateSchema,
+  lines: z
+    .array(
+      z.object({
+        componentTypeId: z.string().min(1),
+        value: z.number().int().min(0),
+      }),
+    )
+    .default([]),
+});
+
+export const payrollRunCreateSchema = z.object({
+  yearMonth: z.string().regex(/^\d{4}-\d{2}$/),
+  bonusFcfaByStaffId: z.record(z.string(), z.number().int().min(0)).optional(),
+});
+
+export const expenseCategorySchema = z.object({
+  name: z.string().trim().min(1).max(80),
+});
+
+export const expenseCreateSchema = z.object({
+  categoryId: z.string().min(1),
+  entryDate: isoDateSchema,
+  amountFcfa: z.number().int().positive(),
+  description: z.string().trim().min(1).max(400),
+  vendor: z.string().trim().max(120).optional().or(z.literal("")),
+  method: z.enum(PAYMENT_CHANNELS).default("cash"),
+});
+
+export const budgetCreateSchema = z.object({
+  categoryId: z.string().min(1),
+  academicYearId: z.string().min(1),
+  amountFcfa: z.number().int().positive(),
+});
