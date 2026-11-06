@@ -159,3 +159,179 @@ export const numberSequences = sqliteTable("number_sequences", {
   padding: integer("padding").notNull(),
   updatedAt: text("updated_at").notNull(),
 });
+
+export const classes = sqliteTable("classes", {
+  id: text("id").primaryKey(),
+  academicYearId: text("academic_year_id")
+    .notNull()
+    .references(() => academicYears.id),
+  levelId: text("level_id")
+    .notNull()
+    .references(() => levels.id),
+  stream: text("stream"),
+  capacity: integer("capacity").notNull().default(40),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+  createdBy: text("created_by"),
+  updatedBy: text("updated_by"),
+});
+
+export const subjects = sqliteTable("subjects", {
+  id: text("id").primaryKey(),
+  code: text("code").notNull().unique(),
+  name: text("name").notNull(),
+  archivedAt: text("archived_at"),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+});
+
+export const classSubjects = sqliteTable("class_subjects", {
+  id: text("id").primaryKey(),
+  classId: text("class_id")
+    .notNull()
+    .references(() => classes.id),
+  subjectId: text("subject_id")
+    .notNull()
+    .references(() => subjects.id),
+  coefficient: integer("coefficient").notNull().default(1),
+  createdAt: text("created_at").notNull(),
+});
+
+export const gradingScales = sqliteTable("grading_scales", {
+  id: text("id").primaryKey(),
+  sectionId: text("section_id")
+    .notNull()
+    .references(() => sections.id),
+  scoreOutOf: integer("score_out_of").notNull(),
+  passMark: integer("pass_mark").notNull(),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+});
+
+export const gradingScaleBands = sqliteTable("grading_scale_bands", {
+  id: text("id").primaryKey(),
+  scaleId: text("scale_id")
+    .notNull()
+    .references(() => gradingScales.id),
+  minScore: integer("min_score").notNull(),
+  maxScore: integer("max_score").notNull(),
+  letter: text("letter").notNull(),
+  remark: text("remark").notNull(),
+});
+
+export const applications = sqliteTable("applications", {
+  id: text("id").primaryKey(),
+  status: text("status").notNull(),
+  givenName: text("given_name").notNull(),
+  familyName: text("family_name").notNull(),
+  sex: text("sex").notNull(),
+  dob: text("dob").notNull(),
+  placeOfBirth: text("place_of_birth"),
+  nationality: text("nationality"),
+  previousSchool: text("previous_school"),
+  levelId: text("level_id")
+    .notNull()
+    .references(() => levels.id),
+  notes: text("notes"),
+  guardianGivenName: text("guardian_given_name").notNull(),
+  guardianFamilyName: text("guardian_family_name").notNull(),
+  guardianPhone: text("guardian_phone").notNull(),
+  guardianEmail: text("guardian_email"),
+  guardianRelationship: text("guardian_relationship").notNull(),
+  pupilId: text("pupil_id"),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+  createdBy: text("created_by"),
+  updatedBy: text("updated_by"),
+});
+
+export const pupils = sqliteTable("pupils", {
+  id: text("id").primaryKey(),
+  admissionNumber: text("admission_number").notNull().unique(),
+  givenName: text("given_name").notNull(),
+  familyName: text("family_name").notNull(),
+  sex: text("sex").notNull(),
+  dob: text("dob").notNull(),
+  placeOfBirth: text("place_of_birth"),
+  nationality: text("nationality"),
+  address: text("address"),
+  medicalNotes: text("medical_notes"),
+  previousSchool: text("previous_school"),
+  applicationId: text("application_id"),
+  status: text("status").notNull(),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+  createdBy: text("created_by"),
+  updatedBy: text("updated_by"),
+});
+
+export const pupilStatusHistory = sqliteTable("pupil_status_history", {
+  id: text("id").primaryKey(),
+  pupilId: text("pupil_id")
+    .notNull()
+    .references(() => pupils.id),
+  status: text("status").notNull(),
+  reason: text("reason"),
+  at: text("at").notNull(),
+  actorUserId: text("actor_user_id"),
+});
+
+export const guardians = sqliteTable("guardians", {
+  id: text("id").primaryKey(),
+  givenName: text("given_name").notNull(),
+  familyName: text("family_name").notNull(),
+  phone: text("phone").notNull(),
+  phone2: text("phone2"),
+  email: text("email"),
+  occupation: text("occupation"),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+});
+
+export const pupilGuardians = sqliteTable("pupil_guardians", {
+  pupilId: text("pupil_id")
+    .notNull()
+    .references(() => pupils.id),
+  guardianId: text("guardian_id")
+    .notNull()
+    .references(() => guardians.id),
+  relationship: text("relationship").notNull(),
+  primaryContact: integer("primary_contact", { mode: "boolean" }).notNull().default(false),
+  feePayer: integer("fee_payer", { mode: "boolean" }).notNull().default(false),
+});
+
+export const promotionBatches = sqliteTable("promotion_batches", {
+  id: text("id").primaryKey(),
+  sourceClassId: text("source_class_id").notNull(),
+  targetClassId: text("target_class_id").notNull(),
+  createdAt: text("created_at").notNull(),
+  createdBy: text("created_by"),
+  undoneAt: text("undone_at"),
+});
+
+export const enrolments = sqliteTable("enrolments", {
+  id: text("id").primaryKey(),
+  pupilId: text("pupil_id")
+    .notNull()
+    .references(() => pupils.id),
+  academicYearId: text("academic_year_id")
+    .notNull()
+    .references(() => academicYears.id),
+  classId: text("class_id")
+    .notNull()
+    .references(() => classes.id),
+  placementType: text("placement_type").notNull(),
+  promotionBatchId: text("promotion_batch_id"),
+  createdAt: text("created_at").notNull(),
+  createdBy: text("created_by"),
+});
+
+export const disciplineNotes = sqliteTable("discipline_notes", {
+  id: text("id").primaryKey(),
+  pupilId: text("pupil_id")
+    .notNull()
+    .references(() => pupils.id),
+  note: text("note").notNull(),
+  at: text("at").notNull(),
+  createdBy: text("created_by"),
+});

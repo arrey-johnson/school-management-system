@@ -222,3 +222,9 @@ This supersedes spec section 2’s “bundle Node and run it as a Windows servic
 **Decision:** `better-sqlite3` and `argon2` are compiled inside the **Node 20 Linux image**. On a Windows host without Python/MSVC (or on Node 24 without prebuilds), `pnpm install --ignore-scripts` is allowed for JS tooling; `pnpm check` that needs SQLite runs with `pnpm check:docker`.
 
 **Reason:** Docker is the production runtime (D031). Native addons must match the Linux container, not the developer’s Windows Node version.
+
+## D034 — One enrolment per pupil per year; promote replaces the row
+
+**Decision:** `enrolments` is unique on `(pupil_id, academic_year_id)`. Bulk promote deletes the source-class row and inserts the target-class row in one transaction, tagged with `promotion_batches`. Undo (48 hours) reverses that swap. Historical class movement for the same year is visible on the batch record and audit log, not as stacked enrolment rows.
+
+**Reason:** A pupil cannot sit in two classes in the same year. Timeline still shows remaining enrolment and status events.

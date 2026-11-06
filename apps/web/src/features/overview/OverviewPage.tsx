@@ -23,8 +23,8 @@ export function OverviewPage() {
           <p className="mt-2 text-xl font-semibold">{user?.roleName}</p>
         </article>
         <article className="rounded-card border border-line bg-white p-5 shadow-card">
-          <p className="text-sm text-muted">Phase 1</p>
-          <p className="mt-2 text-xl font-semibold text-success">Foundation ready</p>
+          <p className="text-sm text-muted">Phase 2</p>
+          <p className="mt-2 text-xl font-semibold text-success">Structure and pupils</p>
         </article>
       </div>
     </div>

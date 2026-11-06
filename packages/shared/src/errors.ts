@@ -10,6 +10,7 @@ export const ERROR_CODES = [
   "PASSWORD_CHANGE_REQUIRED",
   "PERIOD_LOCKED",
   "IDEMPOTENT_REPLAY",
+  "DUPLICATE",
   "INTERNAL",
 ] as const;
 

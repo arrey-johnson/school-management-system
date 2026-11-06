@@ -3,6 +3,7 @@ import path from "node:path";
 import Database from "better-sqlite3";
 import { drizzle, type BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { FOUNDATION_SQL } from "./foundation-sql.js";
+import { PHASE2_SQL } from "./phase2-sql.js";
 import * as schema from "./schema.js";
 
 export type Db = BetterSQLite3Database<typeof schema>;
@@ -22,6 +23,7 @@ export function openDatabase(dataDir: string): DatabaseBundle {
   sqlite.pragma("synchronous = FULL");
   sqlite.pragma("busy_timeout = 5000");
   sqlite.exec(FOUNDATION_SQL);
+  sqlite.exec(PHASE2_SQL);
   const db = drizzle(sqlite, { schema });
   return { sqlite, db, dbPath };
 }

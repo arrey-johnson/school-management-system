@@ -1,9 +1,13 @@
 import type { ReactNode } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
+import { StructurePage } from "../features/academic/StructurePage";
+import { AdmissionsPage } from "../features/admissions/AdmissionsPage";
 import { AuditPage } from "../features/audit/AuditPage";
 import { ChangePasswordPage } from "../features/auth/ChangePasswordPage";
 import { LoginPage } from "../features/auth/LoginPage";
 import { OverviewPage } from "../features/overview/OverviewPage";
+import { PupilDetailPage } from "../features/pupils/PupilDetailPage";
+import { PupilsPage } from "../features/pupils/PupilsPage";
 import { SettingsPage } from "../features/settings/SettingsPage";
 import { SetupPage } from "../features/setup/SetupPage";
 import { UsersPage } from "../features/users/UsersPage";
@@ -33,6 +37,10 @@ function AppRoutes() {
         }
       >
         <Route index element={<OverviewPage />} />
+        <Route path="structure" element={<StructurePage />} />
+        <Route path="admissions" element={<AdmissionsPage />} />
+        <Route path="pupils" element={<PupilsPage />} />
+        <Route path="pupils/:id" element={<PupilDetailPage />} />
         <Route path="users" element={<UsersPage />} />
         <Route path="audit" element={<AuditPage />} />
         <Route path="settings" element={<SettingsPage />} />

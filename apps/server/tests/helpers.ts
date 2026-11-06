@@ -82,3 +82,48 @@ export async function bootstrapAndLogin(app: FastifyInstance) {
     bootStatus: boot.statusCode,
   };
 }
+
+export const TEST_YEAR = {
+  name: "2026/2027",
+  startDate: "2026-09-01",
+  endDate: "2027-06-30",
+  terms: [
+    { name: "Term 1", startDate: "2026-09-01", endDate: "2026-12-15" },
+    { name: "Term 2", startDate: "2027-01-08", endDate: "2027-03-31" },
+    { name: "Term 3", startDate: "2027-04-14", endDate: "2027-06-30" },
+  ],
+};
+
+export async function completeWizard(
+  app: FastifyInstance,
+  cookies: string,
+  csrf: string,
+): Promise<void> {
+  const headers = { cookie: cookies, [CSRF_HEADER]: csrf };
+  const school = await app.inject({
+    method: "POST",
+    url: "/api/v1/setup/school",
+    headers,
+    payload: {
+      name: "ALL BRIGHT CHILDREN",
+      motto: "Learn and shine",
+      address: "Yaounde",
+      phone: "600000000",
+      email: "office@abc.school",
+    },
+  });
+  if (school.statusCode !== 200) throw new Error(`school ${school.statusCode}: ${school.body}`);
+  const year = await app.inject({
+    method: "POST",
+    url: "/api/v1/setup/academic-year",
+    headers,
+    payload: TEST_YEAR,
+  });
+  if (year.statusCode !== 200) throw new Error(`year ${year.statusCode}: ${year.body}`);
+  const complete = await app.inject({
+    method: "POST",
+    url: "/api/v1/setup/complete",
+    headers,
+  });
+  if (complete.statusCode !== 200) throw new Error(`complete ${complete.statusCode}: ${complete.body}`);
+}

@@ -1,7 +1,9 @@
 {
   "appName": "Promptstack School Management",
   "nav.overview": "Overview",
-  "nav.pupils": "Pupils & Admissions",
+  "nav.structure": "School structure",
+  "nav.admissions": "Admissions",
+  "nav.pupils": "Pupils",
   "nav.fees": "Fees & Payments",
   "nav.staff": "Staff & Payroll",
   "nav.academics": "Academics",

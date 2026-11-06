@@ -1,12 +1,10 @@
-# Demo — Phase 1 Foundation
+# Demo — Phase 2 Structure and pupils
 
-1. Start the stack: `docker compose up --build` (or `pnpm dev` after `pnpm install`).
-2. Open `http://localhost:3847/setup`.
-3. Create Super Admin (`admin` / a 10+ character password).
-4. Save school name **ALL BRIGHT CHILDREN**.
-5. Create academic year **2026/2027** (three default terms and Nursery/Primary/Secondary levels).
-6. Finish setup. You should land on Overview.
-7. Open **Users** and confirm the admin row.
-8. Open **Audit log** and click **Verify audit integrity**.
-9. Open **System health** and confirm version and database size.
-10. Sign out and sign in again. Five wrong passwords lock the account for 15 minutes.
+1. Start the stack: `docker compose up --build`.
+2. Open `http://localhost:3847/setup` and complete Super Admin, school **ALL BRIGHT CHILDREN**, year **2026/2027**.
+3. Open **School structure**. Add class **Form 1** stream **A**, then a subject (e.g. ENG / English). Confirm grading defaults (Primary /100, Secondary /20).
+4. Open **Admissions**. Create an application for Amina Ngono, Form 1, guardian phone `677111222`.
+5. Review → Accept → enrol into **Form 1 A**. Admission number should be `ABC-2026-0001`.
+6. Open **Pupils**, search `Amina` and `677111222`. Open the pupil and check the timeline and guardian.
+7. Enrol another pupil directly from the directory, or import a CSV with header `givenName,familyName,sex,dob,classStream,guardianGivenName,guardianFamilyName,guardianPhone,relationship` (classStream like `Form 1 A`). Dry-run errors appear for unknown classes.
+8. Sign in as a **teacher**: Admissions create is denied (no manage permission).

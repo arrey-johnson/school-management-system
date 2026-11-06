@@ -10,7 +10,10 @@ import type { AppContext } from "./app-context.js";
 import type { AppEnv } from "./config/env.js";
 import { openDatabase } from "./db/client.js";
 import { seedFoundation } from "./db/seed.js";
+import { registerAcademicRoutes } from "./modules/academic/routes.js";
+import { registerAdmissionRoutes } from "./modules/admissions/routes.js";
 import { registerAuthRoutes } from "./modules/auth/routes.js";
+import { registerPupilRoutes } from "./modules/pupils/routes.js";
 import { registerSetupRoutes } from "./modules/setup/routes.js";
 import { registerSystemRoutes } from "./modules/system/routes.js";
 import { registerUserRoutes } from "./modules/users/routes.js";
@@ -45,6 +48,9 @@ export async function buildApp(env: AppEnv, options: { logger?: boolean } = {}):
   registerSetupRoutes(app, ctx);
   registerUserRoutes(app, ctx);
   registerSystemRoutes(app, ctx);
+  registerAcademicRoutes(app, ctx);
+  registerAdmissionRoutes(app, ctx);
+  registerPupilRoutes(app, ctx);
 
   const webDist = resolveWebDist();
   if (webDist) {
