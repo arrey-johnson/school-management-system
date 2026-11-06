@@ -27,7 +27,7 @@ export async function apiSend<T>(path: string, method: string, body?: unknown): 
     method,
     credentials: "include",
     headers: { "Content-Type": "application/json", [CSRF_HEADER]: csrf },
-    body: body === undefined ? undefined : JSON.stringify(body),
+    body: JSON.stringify(body ?? {}),
   });
   return parse<T>(res);
 }

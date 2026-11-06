@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1 — Empty JSON POST bodies
+
+- Accept `Content-Type: application/json` with an empty body (Finish setup, Sign out, audit verify). The browser client now sends `{}` on those calls.
+
 ## 0.2.0 — Phase 2 Structure and pupils
 
 - Academic tree: years/terms, sections/levels, classes with streams, subjects, default grading scales.

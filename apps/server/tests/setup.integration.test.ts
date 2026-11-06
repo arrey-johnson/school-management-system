@@ -52,7 +52,8 @@ describe("first-run wizard", () => {
     const complete = await built.app.inject({
       method: "POST",
       url: "/api/v1/setup/complete",
-      headers,
+      headers: { ...headers, "content-type": "application/json" },
+      payload: "",
     });
     expect(complete.statusCode).toBe(200);
 

@@ -18,6 +18,7 @@ import { registerSetupRoutes } from "./modules/setup/routes.js";
 import { registerSystemRoutes } from "./modules/system/routes.js";
 import { registerUserRoutes } from "./modules/users/routes.js";
 import { registerErrorHandler } from "./plugins/error-handler.js";
+import { registerEmptyJsonBody } from "./plugins/json-body.js";
 
 export async function buildApp(env: AppEnv, options: { logger?: boolean } = {}): Promise<{
   app: FastifyInstance;
@@ -33,6 +34,7 @@ export async function buildApp(env: AppEnv, options: { logger?: boolean } = {}):
   });
 
   const ctx: AppContext = { env, bundle, startedAt: Date.now() };
+  registerEmptyJsonBody(app);
 
   await app.register(helmet, {
     contentSecurityPolicy: false,
