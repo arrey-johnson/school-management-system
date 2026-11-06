@@ -21,6 +21,14 @@ export async function apiGet<T>(path: string): Promise<T> {
   return parse<T>(res);
 }
 
+export async function apiBlob(path: string): Promise<Blob> {
+  const res = await fetch(path, { credentials: "include" });
+  if (!res.ok) {
+    throw new Error(`Download failed (${res.status})`);
+  }
+  return res.blob();
+}
+
 export async function apiSend<T>(path: string, method: string, body?: unknown): Promise<T> {
   const csrf = await getCsrf();
   const res = await fetch(path, {

@@ -11,7 +11,9 @@ import type { AppEnv } from "./config/env.js";
 import { openDatabase } from "./db/client.js";
 import { seedFoundation } from "./db/seed.js";
 import { registerAcademicRoutes } from "./modules/academic/routes.js";
+import { registerAcademicsRoutes } from "./modules/academics/routes.js";
 import { registerAdmissionRoutes } from "./modules/admissions/routes.js";
+import { registerAttendanceRoutes } from "./modules/attendance/routes.js";
 import { registerAuthRoutes } from "./modules/auth/routes.js";
 import { registerExpenseRoutes } from "./modules/expenses/routes.js";
 import { registerFeeRoutes } from "./modules/fees/routes.js";
@@ -55,6 +57,8 @@ export async function buildApp(env: AppEnv, options: { logger?: boolean } = {}):
   registerUserRoutes(app, ctx);
   registerSystemRoutes(app, ctx);
   registerAcademicRoutes(app, ctx);
+  registerAcademicsRoutes(app, ctx);
+  registerAttendanceRoutes(app, ctx);
   registerAdmissionRoutes(app, ctx);
   registerPupilRoutes(app, ctx);
   registerFeeRoutes(app, ctx);

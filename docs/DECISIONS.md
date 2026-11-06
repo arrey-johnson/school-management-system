@@ -246,3 +246,9 @@ This supersedes spec section 2’s “bundle Node and run it as a Windows servic
 **Decision:** Percent components use `Math.round(base * percent / 100)`. Absence deduction is `absentDays * round(base / 30)` in that calendar month. Statutory flags are labels only; rates are settings, not Cameroon legal advice.
 
 **Reason:** XAF has no subunits. Rounding is explicit so cashiers and HR can recast a payslip by hand.
+
+## D038 — Assessment types require Headteacher
+
+**Decision:** Creating assessment types and computing term results require `academics:unlock` (Headteacher / Super Admin). Teachers with `academics:marks` create assessments for assigned `class_subjects`, save drafts, and submit to lock.
+
+**Reason:** Weights and max scores change class ranking. Teachers enter marks; they do not define the scheme.

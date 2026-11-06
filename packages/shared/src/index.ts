@@ -8,4 +8,5 @@ export * from "./schemas.js";
 export * from "./admission-number.js";
 export * from "./fees.js";
 export * from "./payroll.js";
+export * from "./grading.js";
 

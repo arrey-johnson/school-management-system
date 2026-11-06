@@ -342,3 +342,40 @@ export const budgetCreateSchema = z.object({
   academicYearId: z.string().min(1),
   amountFcfa: z.number().int().positive(),
 });
+
+export const ATTENDANCE_MARKS = ["present", "absent", "late", "excused"] as const;
+
+export const assessmentTypeCreateSchema = z.object({
+  name: z.string().trim().min(1).max(80),
+  termId: z.string().min(1),
+  weight: z.number().int().min(1).max(100).default(1),
+  maxScore: z.number().int().min(1).max(100).default(20),
+});
+
+export const assessmentCreateSchema = z.object({
+  typeId: z.string().min(1),
+  classSubjectId: z.string().min(1),
+});
+
+export const markUpsertSchema = z.object({
+  pupilId: z.string().min(1),
+  score: z.number().min(0).nullable(),
+  status: z.enum(["present", "absent", "excused"]).default("present"),
+});
+
+export const marksSaveSchema = z.object({
+  assessmentId: z.string().min(1),
+  marks: z.array(markUpsertSchema).min(1),
+});
+
+export const attendanceSubmitSchema = z.object({
+  classId: z.string().min(1),
+  day: isoDateSchema,
+  entries: z.array(
+    z.object({
+      pupilId: z.string().min(1),
+      mark: z.enum(ATTENDANCE_MARKS),
+      reason: z.string().trim().max(200).optional().or(z.literal("")),
+    }),
+  ),
+});

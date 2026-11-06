@@ -73,6 +73,17 @@ export function seedFoundation(db: Db): void {
       .run();
   }
 
+  const academicDefaults: Array<[string, string]> = [
+    ["academics.treatMissingAsZero", "false"],
+    ["academics.withholdReportCardIfFeesOutstanding", "false"],
+  ];
+  for (const [key, valueJson] of academicDefaults) {
+    const existing = db.select().from(settings).where(eq(settings.key, key)).get();
+    if (!existing) {
+      db.insert(settings).values({ key, valueJson, updatedAt: at }).run();
+    }
+  }
+
   const admission = db.select().from(numberSequences).where(eq(numberSequences.name, "admission")).get();
   if (!admission) {
     db.insert(numberSequences)

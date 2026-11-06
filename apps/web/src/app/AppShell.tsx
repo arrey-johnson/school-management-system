@@ -12,6 +12,8 @@ const links: { to: string; labelKey: string; end?: boolean; perm: string | null 
   { to: "/staff", labelKey: "nav.staff", perm: "staff:read" },
   { to: "/payroll", labelKey: "nav.payroll", perm: "payroll:view" },
   { to: "/expenses", labelKey: "nav.expenses", perm: "expenses:read" },
+  { to: "/academics", labelKey: "nav.academics", perm: "academics:read" },
+  { to: "/attendance", labelKey: "nav.attendance", perm: "attendance:read" },
   { to: "/users", labelKey: "nav.settings", perm: "system:users" },
   { to: "/audit", labelKey: "nav.audit", perm: "system:audit" },
   { to: "/settings", labelKey: "nav.health", perm: "system:health" },

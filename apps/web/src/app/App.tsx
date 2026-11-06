@@ -11,6 +11,8 @@ import { PupilsPage } from "../features/pupils/PupilsPage";
 import { SettingsPage } from "../features/settings/SettingsPage";
 import { SetupPage } from "../features/setup/SetupPage";
 import { ExpensesPage } from "../features/expenses/ExpensesPage";
+import { AcademicsPage } from "../features/academics/AcademicsPage";
+import { AttendancePage } from "../features/attendance/AttendancePage";
 import { FeesPage } from "../features/fees/FeesPage";
 import { PayrollPage } from "../features/payroll/PayrollPage";
 import { StaffPage } from "../features/staff/StaffPage";
@@ -49,6 +51,8 @@ function AppRoutes() {
         <Route path="staff" element={<StaffPage />} />
         <Route path="payroll" element={<PayrollPage />} />
         <Route path="expenses" element={<ExpensesPage />} />
+        <Route path="academics" element={<AcademicsPage />} />
+        <Route path="attendance" element={<AttendancePage />} />
         <Route path="users" element={<UsersPage />} />
         <Route path="audit" element={<AuditPage />} />
         <Route path="settings" element={<SettingsPage />} />

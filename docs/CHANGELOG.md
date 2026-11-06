@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.0 — Phase 5 Academics and attendance
+
+- Assessment types, mark grids, submit-to-lock, Headteacher unlock.
+- Shared grading engine: weighted averages, competition ranks (min rank), missing marks excluded unless setting treats them as zero.
+- Term result snapshots and printable report cards (withhold if fees outstanding is off by default).
+- Pupil attendance register; teachers scoped to staff assignments.
+
 ## 0.4.0 — Phase 4 Staff, payroll, expenses
 
 - Staff directory with restricted national ID, status history, assignments, leave, attendance.

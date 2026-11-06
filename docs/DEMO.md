@@ -1,7 +1,7 @@
-# Demo — Phase 4 Staff, payroll, expenses
+# Demo — Phase 5 Academics and attendance
 
 1. Hard-refresh `http://localhost:3847` after `docker compose up --build`.
-2. **Staff**: add Mary Teacher with a national ID. Sign in as **headteacher** — the ID column is blank. Sign in as **HR** — the ID is visible.
-3. **Payroll**: add a statutory percent deduction (label it configurable), save a salary structure (base `200000` + 4%), optional advance, **Calculate run** for `2026-11`.
-4. HR cannot approve their own run. Sign in as Super Admin or Proprietor and approve, then mark paid / lock. Open the payslip PDF.
-5. **Expenses**: bursar adds category Utilities, a draft ENEO bill, submits. Bursar cannot approve. Admin/proprietor approves; bursar marks paid.
+2. Ensure Form 1 A exists with a subject offering (Structure) and enrolled pupils.
+3. **Academics**: add assessment type Sequence 1 (weight 1, max 20) for Term 1. Open the assessment, enter marks 0–20, Save draft, Submit and lock. Teacher cannot unlock; Headteacher/Admin Unlock.
+4. Compute term results. Tied averages share the minimum rank (1, 1, 3). Open a report card PDF.
+5. **Attendance**: pick the class and day, mark Present/Absent/Late/Excused, Submit register. An unassigned teacher is refused.

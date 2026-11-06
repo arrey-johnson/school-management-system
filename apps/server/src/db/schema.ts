@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
+import { integer, real, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 export const schoolProfile = sqliteTable("school_profile", {
   id: text("id").primaryKey(),
@@ -620,4 +620,64 @@ export const budgets = sqliteTable("budgets", {
   academicYearId: text("academic_year_id").notNull(),
   amountFcfa: integer("amount_fcfa").notNull(),
   createdAt: text("created_at").notNull(),
+});
+
+export const assessmentTypes = sqliteTable("assessment_types", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  termId: text("term_id").notNull(),
+  weight: integer("weight").notNull(),
+  maxScore: integer("max_score").notNull(),
+  createdAt: text("created_at").notNull(),
+  createdBy: text("created_by"),
+});
+
+export const assessments = sqliteTable("assessments", {
+  id: text("id").primaryKey(),
+  typeId: text("type_id").notNull(),
+  classSubjectId: text("class_subject_id").notNull(),
+  status: text("status").notNull(),
+  createdAt: text("created_at").notNull(),
+  submittedAt: text("submitted_at"),
+  submittedBy: text("submitted_by"),
+});
+
+export const marks = sqliteTable("marks", {
+  id: text("id").primaryKey(),
+  assessmentId: text("assessment_id").notNull(),
+  pupilId: text("pupil_id").notNull(),
+  score: real("score"),
+  status: text("status").notNull(),
+  updatedAt: text("updated_at").notNull(),
+  updatedBy: text("updated_by"),
+});
+
+export const termResults = sqliteTable("term_results", {
+  id: text("id").primaryKey(),
+  classId: text("class_id").notNull(),
+  termId: text("term_id").notNull(),
+  snapshotJson: text("snapshot_json").notNull(),
+  computedAt: text("computed_at").notNull(),
+  computedBy: text("computed_by"),
+});
+
+export const reportCards = sqliteTable("report_cards", {
+  id: text("id").primaryKey(),
+  pupilId: text("pupil_id").notNull(),
+  termId: text("term_id").notNull(),
+  withheld: integer("withheld", { mode: "boolean" }).notNull().default(false),
+  verificationCode: text("verification_code").notNull(),
+  createdAt: text("created_at").notNull(),
+});
+
+export const pupilAttendance = sqliteTable("pupil_attendance", {
+  id: text("id").primaryKey(),
+  classId: text("class_id").notNull(),
+  pupilId: text("pupil_id").notNull(),
+  day: text("day").notNull(),
+  mark: text("mark").notNull(),
+  reason: text("reason"),
+  submitted: integer("submitted", { mode: "boolean" }).notNull().default(false),
+  createdAt: text("created_at").notNull(),
+  createdBy: text("created_by"),
 });
