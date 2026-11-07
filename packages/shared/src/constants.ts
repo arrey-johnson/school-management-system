@@ -1,5 +1,7 @@
 export const APP_NAME = "Promptstack School Management";
-export const APP_VERSION = "0.6.0";
+export const APP_VERSION = "0.7.0";
+export const RESTORE_CONFIRMATION = "RESTORE SCHOOL DATA";
+export const BACKUP_STALE_MS = 48 * 60 * 60 * 1000;
 export const IDEMPOTENCY_HEADER = "idempotency-key";
 export const DEFAULT_PORT = 3847;
 export const DEFAULT_TIMEZONE = "Africa/Douala";

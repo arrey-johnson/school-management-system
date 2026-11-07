@@ -428,3 +428,8 @@ export const templateRenderSchema = z.object({
 export const searchQuerySchema = z.object({
   q: z.string().trim().min(2).max(80),
 });
+
+export const restoreBackupSchema = z.object({
+  filename: z.string().min(1).max(200),
+  confirmation: z.string().min(1),
+});

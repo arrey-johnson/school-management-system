@@ -7,19 +7,31 @@ import type { AppContext } from "../../app-context.js";
 import { verifyAuditChain } from "../../audit/service.js";
 import { requirePermission, requireUser, resolveSession } from "../../auth/session.js";
 import { auditLog, schoolProfile } from "../../db/schema.js";
+import { backupHealth, diskFreeBytes, liveIntegrity } from "../backup/service.js";
+import { openApiDocument } from "./openapi.js";
 
 export function registerSystemRoutes(app: FastifyInstance, ctx: AppContext): void {
   app.get("/api/v1/system/health", async (req) => {
     const user = requireUser(resolveSession(ctx.bundle, req));
     requirePermission(user, "system:health");
     const stat = fs.existsSync(ctx.bundle.dbPath) ? fs.statSync(ctx.bundle.dbPath) : null;
+    const backup = backupHealth(ctx.bundle);
     return {
       version: APP_VERSION,
       uptimeSeconds: Math.round((Date.now() - ctx.startedAt) / 1000),
       dbBytes: stat?.size ?? 0,
       hostname: os.hostname(),
       port: ctx.env.SMS_PORT,
+      diskFreeBytes: diskFreeBytes(ctx.bundle.dataDir),
+      integrity: liveIntegrity(ctx.bundle),
+      ...backup,
     };
+  });
+
+  app.get("/api/docs", async (req) => {
+    const user = requireUser(resolveSession(ctx.bundle, req));
+    requirePermission(user, "system:openapi");
+    return openApiDocument();
   });
 
   app.get("/api/v1/system/status", async (req) => {

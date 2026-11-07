@@ -1,8 +1,13 @@
 import { loadEnv } from "./config/env.js";
 import { buildApp } from "./app.js";
+import { startBackupJobs } from "./jobs/backup-job.js";
 
 const env = loadEnv();
-const { app } = await buildApp(env, { logger: true });
+const { app, ctx } = await buildApp(env, { logger: true });
+const stopJobs = startBackupJobs(ctx);
+app.addHook("onClose", async () => {
+  stopJobs();
+});
 
 const shutdown = async () => {
   await app.close();

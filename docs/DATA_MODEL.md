@@ -1,4 +1,6 @@
-# Data model (Phase 6)
+# Data model (Phase 7)
+
+`backups` records each archive (checksum, counts, integrity, drive queue status). Quantity and money rules from earlier phases are unchanged.
 
 Inventory quantity is the sum of `stock_movements.qty` (in positive, out negative). Calendar, announcements, and letter templates are school-admin tables.
 
@@ -15,5 +17,10 @@ erDiagram
   }
   document_templates {
     string body
+  }
+  backups {
+    string filename
+    string checksum
+    string integrity
   }
 ```

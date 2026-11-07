@@ -734,3 +734,25 @@ export const documentTemplates = sqliteTable("document_templates", {
   updatedAt: text("updated_at").notNull(),
   createdBy: text("created_by"),
 });
+
+export const backups = sqliteTable("backups", {
+  id: text("id").primaryKey(),
+  filename: text("filename").notNull(),
+  checksum: text("checksum").notNull(),
+  bytes: integer("bytes").notNull(),
+  countsJson: text("counts_json").notNull(),
+  integrity: text("integrity").notNull(),
+  driveStatus: text("drive_status").notNull(),
+  createdAt: text("created_at").notNull(),
+  createdBy: text("created_by"),
+  kind: text("kind").notNull(),
+});
+
+export const driveQueue = sqliteTable("drive_queue", {
+  id: text("id").primaryKey(),
+  backupId: text("backup_id").notNull(),
+  status: text("status").notNull(),
+  lastError: text("last_error"),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+});

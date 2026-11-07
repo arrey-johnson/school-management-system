@@ -50,7 +50,7 @@ pnpm workspaces, TypeScript strict, ESLint + Prettier, Vitest, Playwright, Drizz
 - [x] Phase 4: Staff, payroll, expenses.
 - [x] Phase 5: Academics and attendance. Assessments, mark entry, computation engine, report cards, attendance, reports.
 - [x] Phase 6: Reports, inventory, admin pages, global search, role dashboards.
-- [ ] Phase 7: Backup, recovery, hardening, performance pass, security review.
+- [x] Phase 7: Backup, recovery, hardening, performance pass, security review.
 - [ ] Phase 8: Docker-at-boot, bundled image, Compose wrapper, installer, upgrade flow, install and user docs, clean-VM verification.
 
 ## C5. Order of work inside any phase

@@ -76,6 +76,9 @@ export function seedFoundation(db: Db): void {
   const academicDefaults: Array<[string, string]> = [
     ["academics.treatMissingAsZero", "false"],
     ["academics.withholdReportCardIfFeesOutstanding", "false"],
+    ["backup.keepLast", "14"],
+    ["backup.hour", "2"],
+    ["backup.driveEnabled", "false"],
   ];
   for (const [key, valueJson] of academicDefaults) {
     const existing = db.select().from(settings).where(eq(settings.key, key)).get();

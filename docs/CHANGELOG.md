@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.0 — Phase 7 Backup, restore, hardening
+
+- Manual and scheduled `.sms-backup` archives via the SQLite backup API, checksum + integrity_check, last-N retention.
+- Restore wizard with `RESTORE SCHOOL DATA`, automatic safety backup, path-safe unpack.
+- Health page: last backup, 48-hour stale warning, disk free, integrity, Drive queue (off by default).
+- Audit log SQLite immutability triggers, request ids, OpenAPI stub, indexes and a 5,000-pupil list timing check.
+
 ## 0.6.0 — Phase 6 Reports, inventory, admin
 
 - Report catalogue with on-screen table, print, PDF, and Excel (UTF-8 CSV); extra permission checks (payroll, audit, fees).

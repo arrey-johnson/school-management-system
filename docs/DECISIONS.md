@@ -264,3 +264,9 @@ This supersedes spec section 2’s “bundle Node and run it as a Windows servic
 **Decision:** Headteacher gains `school:update`, `inventory:read`, and `inventory:manage`. Calendar, announcements, and letter templates use `school:update`. Quantity on inventory items is derived from stock movements only.
 
 **Reason:** The Headteacher runs the school calendar and stores. Direct quantity edits would skip the audit trail.
+
+## D041 — Restore confirmation phrase
+
+**Decision:** Restore requires typing `RESTORE SCHOOL DATA`. A safety `.sms-backup` is written first. Archives are gzip-framed `SMSBK1` blobs (SQLite snapshot from the backup API + uploads + SHA-256), not a copy of the live `app.db`.
+
+**Reason:** Accidental restore would wipe a school year. The phrase is documented in `docs/BACKUP_RESTORE.md`.

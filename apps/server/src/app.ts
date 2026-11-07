@@ -16,6 +16,7 @@ import { registerAdminRoutes } from "./modules/admin/routes.js";
 import { registerAdmissionRoutes } from "./modules/admissions/routes.js";
 import { registerAttendanceRoutes } from "./modules/attendance/routes.js";
 import { registerAuthRoutes } from "./modules/auth/routes.js";
+import { registerBackupRoutes } from "./modules/backup/routes.js";
 import { registerDashboardRoutes } from "./modules/dashboard/routes.js";
 import { registerExpenseRoutes } from "./modules/expenses/routes.js";
 import { registerFeeRoutes } from "./modules/fees/routes.js";
@@ -30,6 +31,7 @@ import { registerSystemRoutes } from "./modules/system/routes.js";
 import { registerUserRoutes } from "./modules/users/routes.js";
 import { registerErrorHandler } from "./plugins/error-handler.js";
 import { registerEmptyJsonBody } from "./plugins/json-body.js";
+import { registerRequestId } from "./plugins/request-id.js";
 
 export async function buildApp(env: AppEnv, options: { logger?: boolean } = {}): Promise<{
   app: FastifyInstance;
@@ -39,13 +41,24 @@ export async function buildApp(env: AppEnv, options: { logger?: boolean } = {}):
   const bundle = openDatabase(env.SMS_DATA_DIR);
   seedFoundation(bundle.db);
 
+  const logging = options.logger ?? env.SMS_TEST !== "1";
   const app = Fastify({
-    logger: options.logger ?? env.SMS_TEST !== "1",
+    logger: logging
+      ? {
+          serializers: {
+            req(request) {
+              return { method: request.method, url: request.url, host: request.headers.host };
+            },
+          },
+        }
+      : false,
     trustProxy: true,
+    requestIdHeader: "x-request-id",
   });
 
   const ctx: AppContext = { env, bundle, startedAt: Date.now() };
   registerEmptyJsonBody(app);
+  registerRequestId(app);
 
   await app.register(helmet, {
     contentSecurityPolicy: false,
@@ -75,6 +88,7 @@ export async function buildApp(env: AppEnv, options: { logger?: boolean } = {}):
   registerReportRoutes(app, ctx);
   registerSearchRoutes(app, ctx);
   registerDashboardRoutes(app, ctx);
+  registerBackupRoutes(app, ctx);
 
   const webDist = resolveWebDist();
   if (webDist) {
