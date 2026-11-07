@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { DEMO_LOAD_CONFIRMATION, DEMO_RESET_CONFIRMATION } from "./constants.js";
 import { SCHOOL_KINDS } from "./school-kind.js";
 
 export const usernameSchema = z
@@ -63,6 +64,14 @@ export const createUserSchema = z.object({
 export const paginationQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(200).default(50),
+});
+
+export const demoLoadSchema = z.object({
+  confirmation: z.literal(DEMO_LOAD_CONFIRMATION),
+});
+
+export const demoResetSchema = z.object({
+  confirmation: z.literal(DEMO_RESET_CONFIRMATION),
 });
 
 export const isoDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);

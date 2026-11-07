@@ -20,6 +20,7 @@ import { registerAttendanceRoutes } from "./modules/attendance/routes.js";
 import { registerAuthRoutes } from "./modules/auth/routes.js";
 import { registerBackupRoutes } from "./modules/backup/routes.js";
 import { registerDashboardRoutes } from "./modules/dashboard/routes.js";
+import { registerDemoRoutes } from "./modules/demo/routes.js";
 import { registerExpenseRoutes } from "./modules/expenses/routes.js";
 import { registerFeeRoutes } from "./modules/fees/routes.js";
 import { registerInventoryRoutes } from "./modules/inventory/routes.js";
@@ -90,6 +91,7 @@ export async function buildApp(env: AppEnv, options: { logger?: boolean } = {}):
   registerSetupRoutes(app, ctx);
   registerUserRoutes(app, ctx);
   registerSystemRoutes(app, ctx);
+  registerDemoRoutes(app, ctx);
   registerAcademicRoutes(app, ctx);
   registerAcademicsRoutes(app, ctx);
   registerAttendanceRoutes(app, ctx);

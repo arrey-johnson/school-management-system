@@ -4,7 +4,7 @@ Permissions are `resource:action` strings. Super Admin bypasses checks. Other ro
 
 | Role | Notes |
 |---|---|
-| Super Admin | All permissions |
+| Super Admin | All permissions, including `system:demo` (load/reset fictional data) |
 | Proprietor | Read-only overview, reports, inventory read, audit, approve payments/payroll/expenses |
 | Headteacher | Academic structure and results; calendar/announcements (`school:update`); inventory; no `payroll:view` |
 | Bursar | Fees, payments, expenses, `payroll:view`; cannot approve own reversals |

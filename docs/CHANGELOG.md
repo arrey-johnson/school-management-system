@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.4 — Demo fill and reset
+
+- Super Admin can fill the system with fictional demo data from System health (`LOAD DEMO DATA`).
+- Reset removes that demo data (`RESET DEMO DATA`) and leaves the school profile ready for official use.
+- Demo role accounts (`demo.bursar`, and the other `demo.*` users) use password `DemoPass123` and are deleted on reset.
+
 ## 0.8.3 — Change school type after setup
 
 - Headteachers and Super Admins can change primary / secondary / combined on School structure.

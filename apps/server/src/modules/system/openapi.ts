@@ -9,6 +9,9 @@ export function openApiDocument(): Record<string, unknown> {
       "/api/v1/backups": { get: { summary: "List backups" }, post: { summary: "Create backup" } },
       "/api/v1/backups/restore": { post: { summary: "Restore backup" } },
       "/api/v1/system/health": { get: { summary: "Health" } },
+      "/api/v1/system/demo": { get: { summary: "Demo data status" } },
+      "/api/v1/system/demo/load": { post: { summary: "Load fictional demo data" } },
+      "/api/v1/system/demo/reset": { post: { summary: "Remove fictional demo data" } },
     },
   };
 }

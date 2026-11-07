@@ -136,9 +136,9 @@ Each entry is a choice we will implement unless a later dated entry supersedes i
 
 ## D023 — Demo vs production
 
-**Decision:** Seed/demo accounts only when `SMS_DEMO=1` or a demo installer flavour. Production installer: empty DB + first-run wizard + one Super Admin created at install.
+**Decision:** The production installer still ships an empty database, first-run wizard, and one Super Admin. Fictional demo accounts are **not** created at install. Super Admin may load them later from System health (D046). `SMS_DEMO=1` remains available for installer/dev flavours; it is not required for the in-app buttons.
 
-**Reason:** Spec. Demo passwords must never ship in the production path.
+**Reason:** The school needs to click through the live system before go-live, then wipe the fiction. Known demo passwords must never be created automatically on a production first boot.
 
 ## D024 — Google Drive backup
 
@@ -294,3 +294,9 @@ This supersedes spec section 2’s “bundle Node and run it as a Windows servic
 **Decision:** First-run setup requires `schoolKind`: `primary` (Nursery 1–2 and Class 1–6), `secondary` (Form 1–5, Lower Sixth, Upper Sixth), or `combined` (all three sections). The first academic year seeds only matching sections. After setup, Super Admin and Headteacher (`school:update`) can change the kind on School structure. Changing kind adds any missing default sections/levels. Default sections that no longer belong and have no classes are archived (hidden), never deleted, so pupil history stays intact. Existing databases default to `combined`.
 
 **Reason:** A primary-only or secondary-only school should not see the other cycle’s classes on Structure. Staff can correct a wrong first choice without wiping data. Combined is required for mixed schools and for tests that use both Form 1 and Nursery 1.
+
+## D046 — In-app demo fill and reset
+
+**Decision:** After first-run setup, Super Admin can load a compact fictional dataset from System health by typing `LOAD DEMO DATA`, and remove it by typing `RESET DEMO DATA`. Load is refused if demo is already present. Reset deletes only rows tracked from that load (including demo users and demo payments). School profile, academic year, sections/levels, Super Admin, roles, backups, and the audit log are kept. Receipt/admission sequences reset to 1 only when no official receipts/pupils remain. Official payments are not deleted. This is an explicit exception to append-only payments and “never delete users”, limited to tagged demo rows, so the school can go live cleanly.
+
+**Reason:** Staff need realistic screens to practise on the school server, then a clean official database. Compact data (about two pupils per class, one demo user per role, password `DemoPass123`) keeps the button usable on a typical PC. The CLI 700-pupil generator remains a later scale tool, not the in-app action.

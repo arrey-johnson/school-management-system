@@ -1,9 +1,20 @@
 export const APP_NAME = "Promptstack School Management";
-export const APP_VERSION = "0.8.3";
+export const APP_VERSION = "0.8.4";
 export const BRAND_PURPLE = "#BF00FF";
 export const POWERED_BY = "Powered by Promptstack Technologies";
 export const IMAGE_NAME = "promptstack-sms";
 export const RESTORE_CONFIRMATION = "RESTORE SCHOOL DATA";
+export const DEMO_LOAD_CONFIRMATION = "LOAD DEMO DATA";
+export const DEMO_RESET_CONFIRMATION = "RESET DEMO DATA";
+export const DEMO_PASSWORD = "DemoPass123";
+export const DEMO_ACCOUNTS = [
+  { username: "demo.proprietor", roleSlug: "proprietor", displayName: "Demo Proprietor" },
+  { username: "demo.headteacher", roleSlug: "headteacher", displayName: "Demo Headteacher" },
+  { username: "demo.bursar", roleSlug: "bursar", displayName: "Demo Bursar" },
+  { username: "demo.secretary", roleSlug: "secretary", displayName: "Demo Secretary" },
+  { username: "demo.teacher", roleSlug: "teacher", displayName: "Demo Teacher" },
+  { username: "demo.hr", roleSlug: "hr", displayName: "Demo HR" },
+] as const;
 export const BACKUP_STALE_MS = 48 * 60 * 60 * 1000;
 export const IDEMPOTENCY_HEADER = "idempotency-key";
 export const DEFAULT_PORT = 3847;

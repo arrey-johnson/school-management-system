@@ -17,4 +17,10 @@ describe("permissions", () => {
     expect(roleHasPermission("bursar", "payments:create", grants)).toBe(true);
     expect(roleHasPermission("bursar", "payments:approve", grants)).toBe(false);
   });
+
+  it("keeps demo load and reset on Super Admin only", () => {
+    const grants = DEFAULT_ROLE_PERMISSIONS.bursar ?? [];
+    expect(roleHasPermission("bursar", "system:demo", grants)).toBe(false);
+    expect(roleHasPermission("super_admin", "system:demo", [])).toBe(true);
+  });
 });

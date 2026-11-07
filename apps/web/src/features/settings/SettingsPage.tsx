@@ -1,4 +1,10 @@
-import { RESTORE_CONFIRMATION } from "@sms/shared";
+import {
+  DEMO_ACCOUNTS,
+  DEMO_LOAD_CONFIRMATION,
+  DEMO_PASSWORD,
+  DEMO_RESET_CONFIRMATION,
+  RESTORE_CONFIRMATION,
+} from "@sms/shared";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useAuth } from "../../app/AuthProvider";
@@ -43,7 +49,11 @@ export function SettingsPage() {
   const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
   const [confirm, setConfirm] = useState("");
+  const [loadPhrase, setLoadPhrase] = useState("");
+  const [resetPhrase, setResetPhrase] = useState("");
+  const [busy, setBusy] = useState(false);
   const canBackup = user?.roleSlug === "super_admin" || user?.permissions.includes("system:backup");
+  const canDemo = user?.roleSlug === "super_admin";
   const health = useQuery({
     queryKey: ["health"],
     queryFn: () => apiGet<Health>("/api/v1/system/health"),
@@ -56,6 +66,14 @@ export function SettingsPage() {
   const status = useQuery({
     queryKey: ["status"],
     queryFn: () => apiGet<Status>("/api/v1/system/status"),
+  });
+  const demo = useQuery({
+    queryKey: ["demo"],
+    queryFn: () =>
+      apiGet<{ loaded: boolean; setupComplete: boolean; counts: { pupils: number; staff: number; users: number } }>(
+        "/api/v1/system/demo",
+      ),
+    enabled: canDemo,
   });
   const data = health.data;
   const refresh = () => void queryClient.invalidateQueries();
@@ -174,6 +192,82 @@ export function SettingsPage() {
               placeholder={RESTORE_CONFIRMATION}
             />
           </label>
+        </section>
+      ) : null}
+
+      {canDemo ? (
+        <section className="rounded-card border border-line bg-white p-6 shadow-card">
+          <h2 className="font-semibold text-deep">Demo data</h2>
+          <p className="mt-1 text-sm text-muted">
+            Fill the school with fictional pupils, staff, fees and sample activity so you can click through every
+            screen. When testing is finished, reset removes only that demo data and leaves the school profile ready
+            for official records. Type the confirmation phrase exactly.
+          </p>
+          {demo.data?.loaded ? (
+            <p className="mt-3 text-sm text-ink">
+              Demo is loaded ({demo.data.counts.pupils} pupils, {demo.data.counts.staff} staff, {demo.data.counts.users}{" "}
+              demo users). Sign-in password for demo role accounts: {DEMO_PASSWORD}. Usernames:{" "}
+              {DEMO_ACCOUNTS.map((account) => account.username).join(", ")}.
+            </p>
+          ) : (
+            <p className="mt-3 text-sm text-ink">
+              Demo is not loaded. Finish first-run setup first, then load demo data.
+            </p>
+          )}
+          <label className="mt-3 block text-sm">
+            Load confirmation
+            <input
+              className="mt-1 w-full rounded-lg border border-line px-3 py-2"
+              value={loadPhrase}
+              onChange={(e) => setLoadPhrase(e.target.value)}
+              placeholder={DEMO_LOAD_CONFIRMATION}
+            />
+          </label>
+          <button
+            className="mt-3 rounded-lg bg-purple px-4 py-2 text-white disabled:opacity-50"
+            type="button"
+            disabled={busy}
+            onClick={() => {
+              setError(null);
+              setBusy(true);
+              void apiSend("/api/v1/system/demo/load", "POST", { confirmation: loadPhrase })
+                .then(() => {
+                  setLoadPhrase("");
+                  refresh();
+                })
+                .catch((err: unknown) => setError(err instanceof Error ? err.message : "Demo load failed"))
+                .finally(() => setBusy(false));
+            }}
+          >
+            Fill with demo data
+          </button>
+          <label className="mt-4 block text-sm">
+            Reset confirmation
+            <input
+              className="mt-1 w-full rounded-lg border border-line px-3 py-2"
+              value={resetPhrase}
+              onChange={(e) => setResetPhrase(e.target.value)}
+              placeholder={DEMO_RESET_CONFIRMATION}
+            />
+          </label>
+          <button
+            className="mt-3 rounded-lg border border-danger px-4 py-2 text-danger disabled:opacity-50"
+            type="button"
+            disabled={busy}
+            onClick={() => {
+              setError(null);
+              setBusy(true);
+              void apiSend("/api/v1/system/demo/reset", "POST", { confirmation: resetPhrase })
+                .then(() => {
+                  setResetPhrase("");
+                  refresh();
+                })
+                .catch((err: unknown) => setError(err instanceof Error ? err.message : "Demo reset failed"))
+                .finally(() => setBusy(false));
+            }}
+          >
+            Reset demo data
+          </button>
         </section>
       ) : null}
     </div>

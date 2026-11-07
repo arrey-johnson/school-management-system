@@ -10,7 +10,6 @@ import {
   IconFrontDesk,
   IconMenu,
   IconOffice,
-  IconOverview,
   NAV_ICONS,
 } from "../components/NavIcons";
 import { apiGet, apiSend } from "../lib/api";

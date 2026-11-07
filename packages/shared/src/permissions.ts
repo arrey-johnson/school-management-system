@@ -5,6 +5,7 @@ export const PERMISSIONS = [
   "system:audit",
   "system:audit:verify",
   "system:backup",
+  "system:demo",
   "system:health",
   "system:openapi",
   "system:setup",
