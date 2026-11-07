@@ -288,3 +288,9 @@ This supersedes spec section 2’s “bundle Node and run it as a Windows servic
 **Decision:** Primary purple is `#BF00FF`. The top bar and sidebar show the school profile name (fallback “School”). “Powered by Promptstack Technologies” stays in the page footer. Dashboard activity is a plain-language sentence, not `module:action`. Layout is usable from phone width; the sidebar collapses to icons and becomes a drawer on small screens.
 
 **Reason:** Staff are not technical. The school brand is what they recognise; Promptstack is the vendor mark.
+
+## D045 — School kind at setup
+
+**Decision:** First-run setup requires `schoolKind`: `primary` (Nursery 1–2 and Class 1–6), `secondary` (Form 1–5, Lower Sixth, Upper Sixth), or `combined` (all three sections). The first academic year seeds only matching sections. Staff can still add or rename levels later. Existing databases default to `combined` so current ALL BRIGHT CHILDREN data is unchanged.
+
+**Reason:** A primary-only or secondary-only school should not see the other cycle’s classes on Structure. Combined is required for mixed schools and for tests that use both Form 1 and Nursery 1.

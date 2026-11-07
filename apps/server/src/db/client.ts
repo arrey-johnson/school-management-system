@@ -9,6 +9,7 @@ import { PHASE4_SQL } from "./phase4-sql.js";
 import { PHASE5_SQL } from "./phase5-sql.js";
 import { PHASE6_SQL } from "./phase6-sql.js";
 import { PHASE7_SQL } from "./phase7-sql.js";
+import { ensurePhase8Columns } from "./phase8-sql.js";
 import * as schema from "./schema.js";
 
 export type Db = BetterSQLite3Database<typeof schema>;
@@ -32,6 +33,7 @@ function applyPragmasAndSchema(sqlite: Database.Database): void {
   sqlite.exec(PHASE5_SQL);
   sqlite.exec(PHASE6_SQL);
   sqlite.exec(PHASE7_SQL);
+  ensurePhase8Columns(sqlite);
 }
 
 export function openDatabase(dataDir: string): DatabaseBundle {

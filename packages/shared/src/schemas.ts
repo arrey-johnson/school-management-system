@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SCHOOL_KINDS } from "./school-kind.js";
 
 export const usernameSchema = z
   .string()
@@ -30,6 +31,7 @@ export const bootstrapSchema = z.object({
 
 export const schoolProfileSchema = z.object({
   name: z.string().trim().min(2).max(200),
+  schoolKind: z.enum(SCHOOL_KINDS),
   motto: z.string().trim().max(300).optional().or(z.literal("")),
   address: z.string().trim().max(500).optional().or(z.literal("")),
   phone: z.string().trim().max(40).optional().or(z.literal("")),

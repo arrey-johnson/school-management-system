@@ -7,6 +7,7 @@ PRAGMA busy_timeout = 5000;
 CREATE TABLE IF NOT EXISTS school_profile (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
+  school_kind TEXT NOT NULL DEFAULT 'combined',
   motto TEXT,
   address TEXT,
   phone TEXT,

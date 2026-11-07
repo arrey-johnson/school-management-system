@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.8.2 — School kind at setup
+
+- Setup asks whether the school is primary, secondary, or nursery through secondary.
+- The first academic year creates only the matching classes (Class 1–6 vs Form 1–Upper Sixth).
+
 ## 0.8.1 — Usable home screen and chrome
 
 - Today’s activity is written as full sentences (who did what, in school language).

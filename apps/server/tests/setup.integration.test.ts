@@ -24,6 +24,7 @@ describe("first-run wizard", () => {
       headers,
       payload: {
         name: "ALL BRIGHT CHILDREN",
+        schoolKind: "combined",
         motto: "Learn and shine",
         address: "Yaounde",
         phone: "600000000",
@@ -68,5 +69,73 @@ describe("first-run wizard", () => {
     expect(verify.statusCode).toBe(200);
     expect(verify.json().ok).toBe(true);
     expect(verify.json().checked).toBeGreaterThan(0);
+  });
+
+  it("seeds only nursery and primary classes for a primary school", async () => {
+    const built = await startTestApp();
+    apps.push(built);
+    const session = await bootstrapAndLogin(built.app);
+    const headers = { cookie: session.cookies, [CSRF_HEADER]: session.csrf };
+    await built.app.inject({
+      method: "POST",
+      url: "/api/v1/setup/school",
+      headers,
+      payload: { name: "Sunshine Primary", schoolKind: "primary" },
+    });
+    await built.app.inject({
+      method: "POST",
+      url: "/api/v1/setup/academic-year",
+      headers,
+      payload: {
+        name: "2026/2027",
+        startDate: "2026-09-01",
+        endDate: "2027-06-30",
+        terms: [
+          { name: "Term 1", startDate: "2026-09-01", endDate: "2026-12-15" },
+          { name: "Term 2", startDate: "2027-01-08", endDate: "2027-03-31" },
+          { name: "Term 3", startDate: "2027-04-14", endDate: "2027-06-30" },
+        ],
+      },
+    });
+    const tree = await built.app.inject({ method: "GET", url: "/api/v1/academic/tree", headers });
+    const names = (tree.json().sections as Array<{ name: string; levels: Array<{ name: string }> }>)
+      .flatMap((section) => [section.name, ...section.levels.map((level) => level.name)]);
+    expect(names).toContain("Class 1");
+    expect(names).toContain("Nursery 1");
+    expect(names).not.toContain("Form 1");
+  });
+
+  it("seeds only secondary forms for a secondary school", async () => {
+    const built = await startTestApp();
+    apps.push(built);
+    const session = await bootstrapAndLogin(built.app);
+    const headers = { cookie: session.cookies, [CSRF_HEADER]: session.csrf };
+    await built.app.inject({
+      method: "POST",
+      url: "/api/v1/setup/school",
+      headers,
+      payload: { name: "Hillside College", schoolKind: "secondary" },
+    });
+    await built.app.inject({
+      method: "POST",
+      url: "/api/v1/setup/academic-year",
+      headers,
+      payload: {
+        name: "2026/2027",
+        startDate: "2026-09-01",
+        endDate: "2027-06-30",
+        terms: [
+          { name: "Term 1", startDate: "2026-09-01", endDate: "2026-12-15" },
+          { name: "Term 2", startDate: "2027-01-08", endDate: "2027-03-31" },
+          { name: "Term 3", startDate: "2027-04-14", endDate: "2027-06-30" },
+        ],
+      },
+    });
+    const tree = await built.app.inject({ method: "GET", url: "/api/v1/academic/tree", headers });
+    const names = (tree.json().sections as Array<{ name: string; levels: Array<{ name: string }> }>)
+      .flatMap((section) => [section.name, ...section.levels.map((level) => level.name)]);
+    expect(names).toContain("Form 1");
+    expect(names).not.toContain("Class 1");
+    expect(names).not.toContain("Nursery 1");
   });
 });

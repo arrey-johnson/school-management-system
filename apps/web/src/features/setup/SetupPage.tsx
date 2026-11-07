@@ -1,4 +1,4 @@
-import { POWERED_BY } from "@sms/shared";
+import { POWERED_BY, type SchoolKind } from "@sms/shared";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../app/AuthProvider";
@@ -21,6 +21,7 @@ export function SetupPage() {
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("");
   const [schoolName, setSchoolName] = useState("ALL BRIGHT CHILDREN");
+  const [schoolKind, setSchoolKind] = useState<SchoolKind | "">("");
   const [yearName, setYearName] = useState("2026/2027");
 
   const load = () => {
@@ -100,8 +101,13 @@ export function SetupPage() {
           onSubmit={(e) => {
             e.preventDefault();
             setError(null);
+            if (!schoolKind) {
+              setError("Choose whether this is a primary school, a secondary school, or both.");
+              return;
+            }
             void apiSend("/api/v1/setup/school", "POST", {
               name: schoolName,
+              schoolKind,
               motto: "",
               address: "",
               phone: "",
@@ -118,6 +124,54 @@ export function SetupPage() {
             onChange={(e) => setSchoolName(e.target.value)}
             required
           />
+          <fieldset className="space-y-2">
+            <legend className="text-sm font-medium text-deep">What kind of school is this?</legend>
+            <p className="text-sm text-muted">
+              Classes are created to match this choice. You can still add or rename levels later.
+            </p>
+            <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-line p-3">
+              <input
+                className="mt-1"
+                type="radio"
+                name="schoolKind"
+                required
+                checked={schoolKind === "primary"}
+                onChange={() => setSchoolKind("primary")}
+              />
+              <span>
+                <span className="font-medium">Primary school</span>
+                <span className="block text-sm text-muted">Nursery 1–2 and Class 1–6</span>
+              </span>
+            </label>
+            <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-line p-3">
+              <input
+                className="mt-1"
+                type="radio"
+                name="schoolKind"
+                required
+                checked={schoolKind === "secondary"}
+                onChange={() => setSchoolKind("secondary")}
+              />
+              <span>
+                <span className="font-medium">Secondary school</span>
+                <span className="block text-sm text-muted">Form 1–5, Lower Sixth, Upper Sixth</span>
+              </span>
+            </label>
+            <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-line p-3">
+              <input
+                className="mt-1"
+                type="radio"
+                name="schoolKind"
+                required
+                checked={schoolKind === "combined"}
+                onChange={() => setSchoolKind("combined")}
+              />
+              <span>
+                <span className="font-medium">Nursery, primary and secondary</span>
+                <span className="block text-sm text-muted">All sections (for schools like ALL BRIGHT CHILDREN)</span>
+              </span>
+            </label>
+          </fieldset>
           <button className="rounded-lg bg-purple px-4 py-2 text-white" type="submit">
             Save school
           </button>

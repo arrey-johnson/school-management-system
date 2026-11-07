@@ -3,6 +3,7 @@ import { integer, real, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlit
 export const schoolProfile = sqliteTable("school_profile", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
+  schoolKind: text("school_kind").notNull().default("combined"),
   motto: text("motto"),
   address: text("address"),
   phone: text("phone"),

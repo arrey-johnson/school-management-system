@@ -3,6 +3,9 @@ import {
   bootstrapSchema,
   createId,
   schoolProfileSchema,
+  SCHOOL_KINDS,
+  sectionsForSchoolKind,
+  type SchoolKind,
 } from "@sms/shared";
 import { eq } from "drizzle-orm";
 import type { FastifyInstance } from "fastify";
@@ -22,15 +25,6 @@ function isSetupComplete(ctx: AppContext): boolean {
 function userCount(ctx: AppContext): number {
   return ctx.bundle.db.select().from(users).all().length;
 }
-
-const DEFAULT_SECTIONS: { name: string; levels: string[] }[] = [
-  { name: "Nursery", levels: ["Nursery 1", "Nursery 2"] },
-  { name: "Primary", levels: ["Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6"] },
-  {
-    name: "Secondary",
-    levels: ["Form 1", "Form 2", "Form 3", "Form 4", "Form 5", "Lower Sixth", "Upper Sixth"],
-  },
-];
 
 export function registerSetupRoutes(app: FastifyInstance, ctx: AppContext): void {
   app.get("/api/v1/setup/status", async () => {
@@ -93,6 +87,7 @@ export function registerSetupRoutes(app: FastifyInstance, ctx: AppContext): void
         .update(schoolProfile)
         .set({
           name: body.name,
+          schoolKind: body.schoolKind,
           motto: body.motto || null,
           address: body.address || null,
           phone: body.phone || null,
@@ -108,6 +103,7 @@ export function registerSetupRoutes(app: FastifyInstance, ctx: AppContext): void
         .values({
           id: createId(),
           name: body.name,
+          schoolKind: body.schoolKind,
           motto: body.motto || null,
           address: body.address || null,
           phone: body.phone || null,
@@ -138,6 +134,13 @@ export function registerSetupRoutes(app: FastifyInstance, ctx: AppContext): void
     if (ctx.bundle.db.select().from(academicYears).get()) {
       throw httpError(409, "CONFLICT", "An academic year already exists");
     }
+    const profile = ctx.bundle.db.select().from(schoolProfile).get();
+    if (!profile) {
+      throw httpError(400, "VALIDATION", "Save the school profile first");
+    }
+    const kind: SchoolKind = (SCHOOL_KINDS as readonly string[]).includes(profile.schoolKind)
+      ? (profile.schoolKind as SchoolKind)
+      : "combined";
     const at = new Date().toISOString();
     const yearId = createId();
     ctx.bundle.sqlite.transaction(() => {
@@ -170,7 +173,7 @@ export function registerSetupRoutes(app: FastifyInstance, ctx: AppContext): void
           })
           .run();
       });
-      DEFAULT_SECTIONS.forEach((section, sIndex) => {
+      sectionsForSchoolKind(kind).forEach((section, sIndex) => {
         const sectionId = createId();
         ctx.bundle.db
           .insert(sections)

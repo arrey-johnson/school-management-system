@@ -106,6 +106,7 @@ export async function completeWizard(
     headers,
     payload: {
       name: "ALL BRIGHT CHILDREN",
+      schoolKind: "combined",
       motto: "Learn and shine",
       address: "Yaounde",
       phone: "600000000",

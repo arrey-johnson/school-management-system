@@ -56,7 +56,7 @@ Rules:
 ## 5. Modules and detailed requirements
 
 ### 5.1 Academic structure and settings
-- School profile: name, logo upload, address, phone, email, motto, stamp/signature images for documents.
+- School profile: name, school kind (primary, secondary, or combined nursery/primary/secondary), logo upload, address, phone, email, motto, stamp/signature images for documents. First-year defaults seed only the sections for that kind (D045).
 - Academic years (one active at a time), terms (Cameroon default: 3 terms), term dates, holidays.
 - Sections: Nursery, Primary, Secondary (add/rename allowed). Levels per section (defaults: Nursery 1-2; Primary Class 1-6; Secondary Form 1-5, Lower Sixth, Upper Sixth). Classes (with optional streams/arms, e.g. Form 1 A/B), class teacher, capacity.
 - Subjects per level/class, with coefficient (weight) and which teacher teaches it in which class.
