@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { IconCollapse, IconMenu, NAV_ICONS } from "../components/NavIcons";
+import { IconMenu, NAV_ICONS } from "../components/NavIcons";
 import { apiGet, apiSend } from "../lib/api";
 import { useAuth } from "./AuthProvider";
 
@@ -93,9 +93,17 @@ export function AppShell() {
     return () => window.clearTimeout(handle);
   }, [query, searchOpen]);
 
+  const toggleMenu = () => {
+    if (window.matchMedia("(min-width: 768px)").matches) {
+      setCollapsed((v) => !v);
+      return;
+    }
+    setMobileOpen((v) => !v);
+  };
+
   const nav = (
     <>
-      <div className={`border-b border-white/15 ${collapsed ? "px-3 py-5" : "px-4 py-5"}`}>
+      <div className={`border-b border-white/15 ${collapsed ? "px-3 py-4" : "px-4 py-4"}`}>
         <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/70">School</p>
         <h1 className={`mt-1 font-semibold leading-tight text-white ${collapsed ? "sr-only" : "text-base"}`}>
           {schoolName}
@@ -125,14 +133,6 @@ export function AppShell() {
             );
           })}
       </nav>
-      <button
-        className="m-2 hidden items-center justify-center gap-2 rounded-xl bg-white/10 px-3 py-2 text-xs text-white/90 hover:bg-white/20 md:flex"
-        type="button"
-        onClick={() => setCollapsed((v) => !v)}
-      >
-        <IconCollapse className={`h-4 w-4 ${collapsed ? "rotate-180" : ""}`} />
-        <span className={collapsed ? "sr-only" : ""}>{collapsed ? "Expand menu" : "Collapse menu"}</span>
-      </button>
     </>
   );
 
@@ -157,10 +157,11 @@ export function AppShell() {
         <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-line bg-white/95 px-3 py-3 backdrop-blur md:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <button
-              className="rounded-xl border border-line p-2 text-deep md:hidden"
+              className="rounded-xl border border-line p-2 text-deep"
               type="button"
-              aria-label="Open menu"
-              onClick={() => setMobileOpen(true)}
+              aria-label="Menu"
+              aria-expanded={mobileOpen || !collapsed}
+              onClick={toggleMenu}
             >
               <IconMenu />
             </button>
