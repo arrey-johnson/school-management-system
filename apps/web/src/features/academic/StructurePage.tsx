@@ -69,44 +69,6 @@ export function StructurePage() {
       <h1 className="text-2xl font-semibold text-deep">School structure</h1>
       {error ? <p className="text-sm text-danger">{error}</p> : null}
 
-      <article className="rounded-card border border-line bg-white p-5 shadow-card">
-        <h2 className="font-semibold">School type</h2>
-        <form
-          className="mt-3 space-y-3"
-          onSubmit={(e) => {
-            e.preventDefault();
-            const profile = school.data?.school;
-            if (!profile || !schoolKind) return;
-            setError(null);
-            void apiSend("/api/v1/school", "PATCH", {
-              name: profile.name,
-              schoolKind,
-              motto: profile.motto ?? "",
-              address: profile.address ?? "",
-              phone: profile.phone ?? "",
-              email: profile.email ?? "",
-            })
-              .then(() =>
-                Promise.all([
-                  queryClient.invalidateQueries({ queryKey: ["academic-tree"] }),
-                  queryClient.invalidateQueries({ queryKey: ["school-profile"] }),
-                  queryClient.invalidateQueries({ queryKey: ["branding"] }),
-                ]),
-              )
-              .catch((err: unknown) => setError(err instanceof Error ? err.message : "Failed"));
-          }}
-        >
-          <SchoolKindFields value={schoolKind} onChange={setSchoolKind} disabled={!canEditSchool} />
-          {canEditSchool ? (
-            <button className="rounded-lg bg-purple px-4 py-2 text-white" type="submit">
-              Save school type
-            </button>
-          ) : (
-            <p className="text-sm text-muted">Ask an administrator if this needs to change.</p>
-          )}
-        </form>
-      </article>
-
       <div className="grid gap-4 lg:grid-cols-2">
         <article className="rounded-card border border-line bg-white p-5 shadow-card">
           <h2 className="font-semibold">Years and terms</h2>
@@ -255,6 +217,44 @@ export function StructurePage() {
             </p>
           </div>
         ))}
+      </article>
+
+      <article className="rounded-card border border-line bg-white px-4 py-3 shadow-card">
+        <form
+          className="flex flex-wrap items-center gap-x-4 gap-y-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const profile = school.data?.school;
+            if (!profile || !schoolKind) return;
+            setError(null);
+            void apiSend("/api/v1/school", "PATCH", {
+              name: profile.name,
+              schoolKind,
+              motto: profile.motto ?? "",
+              address: profile.address ?? "",
+              phone: profile.phone ?? "",
+              email: profile.email ?? "",
+            })
+              .then(() =>
+                Promise.all([
+                  queryClient.invalidateQueries({ queryKey: ["academic-tree"] }),
+                  queryClient.invalidateQueries({ queryKey: ["school-profile"] }),
+                  queryClient.invalidateQueries({ queryKey: ["branding"] }),
+                ]),
+              )
+              .catch((err: unknown) => setError(err instanceof Error ? err.message : "Failed"));
+          }}
+        >
+          <span className="text-sm font-medium text-deep">School type</span>
+          <SchoolKindFields compact value={schoolKind} onChange={setSchoolKind} disabled={!canEditSchool} />
+          {canEditSchool ? (
+            <button className="rounded-lg bg-purple px-3 py-1.5 text-sm text-white" type="submit">
+              Save
+            </button>
+          ) : (
+            <span className="text-sm text-muted">Ask an administrator to change this.</span>
+          )}
+        </form>
       </article>
     </div>
   );
