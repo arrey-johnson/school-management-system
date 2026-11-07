@@ -1,3 +1,4 @@
+import { POWERED_BY } from "@sms/shared";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../app/AuthProvider";
@@ -173,6 +174,7 @@ export function SetupPage() {
           Finish setup
         </button>
       ) : null}
+      <p className="mt-8 text-center text-xs text-muted">{POWERED_BY}</p>
     </div>
   );
 }

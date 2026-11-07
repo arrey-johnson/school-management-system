@@ -187,18 +187,18 @@ Key constraints:
 
 Tailwind theme tokens:
 ```
-deep:   #24104A   (sidebar, headings on dark)
-purple: #5B2FC0   (primary)
-mid:    #7C4DDB   (accents, hover)
-soft:   #EFE9FB   (tints, selected rows)
-pale:   #F7F4FD   (page background tint)
-border: #E0D6F4
-ink:    #1F1237   (body text)
-muted:  #6B6385   (secondary text)
+deep:   #4A0066   (sidebar)
+purple: #BF00FF   (primary)
+mid:    #D24AFF   (accents, hover)
+soft:   #F6D9FF   (tints, selected rows)
+pale:   #FBF4FF   (page background tint)
+border: #E9C6FF
+ink:    #2A003D   (body text)
+muted:  #7A5A8A   (secondary text)
 success:#2E8B57   warning:#B7791F   danger:#C0392B
 ```
 - Font: Inter (bundled locally, no CDN, since the app must work offline).
-- Layout: dark purple sidebar with white logo, white top bar with breadcrumb and user menu, pale purple content area, white rounded cards (radius 12px, 1px border), purple primary buttons, green "Active/Paid" text badges, subtle shadows.
+- Layout: dark purple collapsible sidebar with white line icons, school name in the top bar, pale purple content, white rounded cards, purple primary buttons. Footer: “Powered by Promptstack Technologies”. Responsive from phone width upward.
 - Match the look of the approved proposal mockups: dashboard stat cards, fee collection trend line chart, "Today's activity" panel, pupil directory table with search and "+ Add pupil", fees table with receipt numbers, assessment workspace table.
 - All assets (fonts, icons, images) bundled locally.
 

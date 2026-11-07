@@ -59,6 +59,11 @@ export function registerSystemRoutes(app: FastifyInstance, ctx: AppContext): voi
     };
   });
 
+  app.get("/api/v1/branding", async () => {
+    const school = ctx.bundle.db.select().from(schoolProfile).get();
+    return { schoolName: school?.name ?? null };
+  });
+
   app.get("/api/v1/school", async (req) => {
     const user = requireUser(resolveSession(ctx.bundle, req));
     requirePermission(user, "school:read");

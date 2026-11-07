@@ -1,3 +1,4 @@
+import { POWERED_BY } from "@sms/shared";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../app/AuthProvider";
@@ -46,6 +47,7 @@ export function ChangePasswordPage() {
           Save password
         </button>
       </form>
+      <p className="mt-6 text-center text-xs text-muted">{POWERED_BY}</p>
     </div>
   );
 }

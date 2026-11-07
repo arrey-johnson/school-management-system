@@ -11,4 +11,6 @@ test-results
 *.db-wal
 *.db-shm
 .env
+installer/output
+installer/payload/*.tar
 docs

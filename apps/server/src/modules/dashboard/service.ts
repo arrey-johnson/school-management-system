@@ -1,4 +1,4 @@
-import type { Permission } from "@sms/shared";
+import { describeActivity, type Permission } from "@sms/shared";
 import { eq } from "drizzle-orm";
 import type { AuthUser } from "../../auth/session.js";
 import type { DatabaseBundle } from "../../db/client.js";
@@ -14,6 +14,7 @@ import {
   pupils,
   sections,
   staff,
+  users,
 } from "../../db/schema.js";
 import { todayIso } from "../../utils/dates.js";
 import { teacherClassSubjectIds } from "../academics/service.js";
@@ -111,7 +112,18 @@ export function roleDashboard(bundle: DatabaseBundle, user: AuthUser) {
     .all()
     .slice(-20)
     .reverse()
-    .map((row) => ({ at: row.at, module: row.module, action: row.action, entity: row.entity }));
+    .map((row) => {
+      const actor = row.actorUserId
+        ? bundle.db.select().from(users).where(eq(users.id, row.actorUserId)).get()
+        : undefined;
+      return describeActivity({
+        at: row.at,
+        module: row.module,
+        action: row.action,
+        entity: row.entity,
+        actorName: actor?.displayName ?? null,
+      });
+    });
 
   const topArrears = can(user, "payments:read")
     ? arrears(bundle)

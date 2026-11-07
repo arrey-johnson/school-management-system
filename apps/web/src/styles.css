@@ -3,13 +3,19 @@
 @tailwind utilities;
 
 :root {
-  color: #1f1237;
+  color: #2a003d;
 }
 
 button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 a:focus-visible {
-  outline: 2px solid #5b2fc0;
+  outline: 2px solid #bf00ff;
   outline-offset: 2px;
+}
+
+@media (max-width: 767px) {
+  main {
+    padding: 1rem;
+  }
 }

@@ -282,3 +282,9 @@ This supersedes spec section 2’s “bundle Node and run it as a Windows servic
 **Decision:** On process start, if `settings.schema.version` is set and differs from `APP_VERSION`, write an `upgrade` `.sms-backup` before the new code serves traffic. Fresh installs (`schema.version` still `0`) skip that extra archive.
 
 **Reason:** Spec upgrade path. Image replace is not a data wipe because the bind mount stays; this archive covers schema drift.
+
+## D044 — School name chrome and brand purple
+
+**Decision:** Primary purple is `#BF00FF`. The top bar and sidebar show the school profile name (fallback “School”). “Powered by Promptstack Technologies” stays in the page footer. Dashboard activity is a plain-language sentence, not `module:action`. Layout is usable from phone width; the sidebar collapses to icons and becomes a drawer on small screens.
+
+**Reason:** Staff are not technical. The school brand is what they recognise; Promptstack is the vendor mark.

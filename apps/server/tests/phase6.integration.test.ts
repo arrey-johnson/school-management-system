@@ -225,6 +225,9 @@ describe("reports, inventory, search, dashboard", () => {
     expect(dash.statusCode).toBe(200);
     expect(dash.json().pupilCount).toBeGreaterThan(0);
     expect(dash.json().announcements.length).toBeGreaterThan(0);
+    const story = dash.json().activity[0] as { summary?: string };
+    expect(story.summary ?? "").toMatch(/ /);
+    expect(story.summary ?? "").not.toMatch(/^[a-z]+:[a-z]+$/);
 
     const teacherDash = await built.app.inject({ method: "GET", url: "/api/v1/dashboard", headers: teacher });
     expect(teacherDash.statusCode).toBe(200);

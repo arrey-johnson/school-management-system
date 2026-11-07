@@ -1,3 +1,5 @@
+import { POWERED_BY } from "@sms/shared";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
@@ -11,9 +13,14 @@ export function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const branding = useQuery({
+    queryKey: ["branding"],
+    queryFn: () => apiGet<{ schoolName: string | null }>("/api/v1/branding"),
+  });
+  const schoolName = branding.data?.schoolName ?? t("appName");
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-pale p-6">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-pale p-6">
       <form
         className="w-full max-w-md rounded-card border border-line bg-white p-8 shadow-card"
         onSubmit={(e) => {
@@ -39,8 +46,8 @@ export function LoginPage() {
           })();
         }}
       >
-        <p className="text-sm font-medium text-purple">Promptstack Technologies</p>
-        <h1 className="mt-2 text-2xl font-semibold text-deep">{t("appName")}</h1>
+        <p className="text-sm font-medium text-purple">Welcome</p>
+        <h1 className="mt-2 text-2xl font-semibold text-deep">{schoolName}</h1>
         <label className="mt-6 block text-sm font-medium" htmlFor="username">
           {t("auth.username")}
         </label>
@@ -78,6 +85,7 @@ export function LoginPage() {
           </Link>
         </p>
       </form>
+      <p className="mt-6 text-center text-xs text-muted">{POWERED_BY}</p>
     </div>
   );
 }

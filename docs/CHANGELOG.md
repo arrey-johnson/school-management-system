@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.8.1 — Usable home screen and chrome
+
+- Today’s activity is written as full sentences (who did what, in school language).
+- Home dashboard: colourful stat cards, fee bar chart, enrolment pie, attendance bars.
+- Collapsible sidebar with white line icons; phone drawer menu; school name in the header; footer “Powered by Promptstack Technologies”.
+- Brand purple `#BF00FF`.
+
 ## 0.8.0 — Phase 8 Packaging and handover
 
 - Offline installer: bundled image tar, Compose on ProgramData, firewall TCP 3847, boot task, desktop shortcut.

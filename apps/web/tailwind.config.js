@@ -4,14 +4,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        deep: "#24104A",
-        purple: "#5B2FC0",
-        mid: "#7C4DDB",
-        soft: "#EFE9FB",
-        pale: "#F7F4FD",
-        line: "#E0D6F4",
-        ink: "#1F1237",
-        muted: "#6B6385",
+        deep: "#4A0066",
+        purple: "#BF00FF",
+        mid: "#D24AFF",
+        soft: "#F6D9FF",
+        pale: "#FBF4FF",
+        line: "#E9C6FF",
+        ink: "#2A003D",
+        muted: "#7A5A8A",
         success: "#2E8B57",
         warning: "#B7791F",
         danger: "#C0392B",
@@ -20,7 +20,7 @@ export default {
         sans: ["Inter", "system-ui", "sans-serif"],
       },
       boxShadow: {
-        card: "0 8px 24px rgba(36, 16, 74, 0.08)",
+        card: "0 10px 28px rgba(191, 0, 255, 0.12)",
       },
       borderRadius: {
         card: "12px",
