@@ -166,6 +166,37 @@ export function IconCollapse(props: IconProps) {
     </Svg>
   );
 }
+export function IconChevron(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M6 9l6 6 6-6" />
+    </Svg>
+  );
+}
+export function IconFrontDesk(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M4 20V10l8-5 8 5v10" />
+      <path d="M10 20v-6h4v6" />
+    </Svg>
+  );
+}
+export function IconFinance(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <circle cx="12" cy="12" r="8" />
+      <path d="M12 8v8M9.5 10.5c.6-1 1.5-1.5 2.5-1.5h1a2 2 0 0 1 0 4h-2a2 2 0 0 0 0 4h1c1 0 1.9-.5 2.5-1.5" />
+    </Svg>
+  );
+}
+export function IconOffice(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M4 20V7l8-3 8 3v13" />
+      <path d="M9 20v-5h6v5M9 10h.01M15 10h.01M12 10h.01M9 14h.01M15 14h.01M12 14h.01" />
+    </Svg>
+  );
+}
 
 export const NAV_ICONS = {
   overview: IconOverview,
