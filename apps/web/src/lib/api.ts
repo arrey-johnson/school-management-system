@@ -1,11 +1,15 @@
 import { CSRF_HEADER } from "@sms/shared";
 
-type ErrorBody = { error?: { code?: string; message?: string } };
+type ErrorBody = { error?: { code?: string; message?: string; fields?: Array<{ message?: string }> } };
 
 async function parse<T>(res: Response): Promise<T> {
   const data = (await res.json()) as T & ErrorBody;
   if (!res.ok) {
-    throw new Error(data.error?.message ?? `Request failed (${res.status})`);
+    const fields = (data.error?.fields ?? [])
+      .map((field) => field.message)
+      .filter((message): message is string => Boolean(message));
+    const message = data.error?.message ?? `Request failed (${res.status})`;
+    throw new Error(fields.length ? `${message}: ${fields.join("; ")}` : message);
   }
   return data;
 }

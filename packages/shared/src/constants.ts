@@ -1,5 +1,5 @@
 export const APP_NAME = "Promptstack School Management";
-export const APP_VERSION = "0.8.4";
+export const APP_VERSION = "0.8.5";
 export const BRAND_PURPLE = "#BF00FF";
 export const POWERED_BY = "Powered by Promptstack Technologies";
 export const IMAGE_NAME = "promptstack-sms";

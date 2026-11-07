@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.8.5 — Demo load works without a typed phrase
+
+- Fill / reset demo data uses an on-screen Yes/Cancel step and sends the confirmation for you (no more “Invalid input” from an empty box).
+- Full-screen spinner while demo data is loading or resetting.
+
 ## 0.8.4 — Demo fill and reset
 
 - Super Admin can fill the system with fictional demo data from System health (`LOAD DEMO DATA`).

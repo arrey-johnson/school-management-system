@@ -4,7 +4,7 @@ Open the school system in a browser on the LAN. Sign in with the account the Sup
 
 | Who | Typical work |
 |---|---|
-| Super Admin | Users, backups, restore (`RESTORE SCHOOL DATA`), health, first-run, demo fill (`LOAD DEMO DATA`) and reset (`RESET DEMO DATA`) |
+| Super Admin | Users, backups, restore (`RESTORE SCHOOL DATA`), health, first-run, demo fill and reset (Yes/Cancel on System health) |
 | Proprietor | Dashboards, reports, approve large discounts / reversals / payroll |
 | Headteacher | Structure, marks unlock, attendance, inventory, calendar |
 | Bursar | Fees, payments, receipts, expenses, cash-up |

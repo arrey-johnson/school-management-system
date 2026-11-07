@@ -67,11 +67,17 @@ export const paginationQuerySchema = z.object({
 });
 
 export const demoLoadSchema = z.object({
-  confirmation: z.literal(DEMO_LOAD_CONFIRMATION),
+  confirmation: z
+    .string()
+    .trim()
+    .refine((value) => value === DEMO_LOAD_CONFIRMATION, { message: `Type ${DEMO_LOAD_CONFIRMATION}` }),
 });
 
 export const demoResetSchema = z.object({
-  confirmation: z.literal(DEMO_RESET_CONFIRMATION),
+  confirmation: z
+    .string()
+    .trim()
+    .refine((value) => value === DEMO_RESET_CONFIRMATION, { message: `Type ${DEMO_RESET_CONFIRMATION}` }),
 });
 
 export const isoDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);

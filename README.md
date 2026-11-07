@@ -8,7 +8,7 @@ The product name shown in the UI is **Promptstack School Management**. It runs o
 
 ## Status
 
-**Phase 8: packaging and handover** (app version 0.8.4). Super Admin can load and reset fictional demo data from System health after setup.
+**Phase 8: packaging and handover** (app version 0.8.5). Super Admin can load and reset fictional demo data from System health after setup.
 
 ## School install
 

@@ -49,9 +49,8 @@ export function SettingsPage() {
   const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
   const [confirm, setConfirm] = useState("");
-  const [loadPhrase, setLoadPhrase] = useState("");
-  const [resetPhrase, setResetPhrase] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState<"load" | "reset" | null>(null);
+  const [pending, setPending] = useState<"load" | "reset" | null>(null);
   const canBackup = user?.roleSlug === "super_admin" || user?.permissions.includes("system:backup");
   const canDemo = user?.roleSlug === "super_admin";
   const health = useQuery({
@@ -77,6 +76,17 @@ export function SettingsPage() {
   });
   const data = health.data;
   const refresh = () => void queryClient.invalidateQueries();
+  const runDemo = (action: "load" | "reset") => {
+    setError(null);
+    setPending(null);
+    setBusy(action);
+    const path = action === "load" ? "/api/v1/system/demo/load" : "/api/v1/system/demo/reset";
+    const confirmation = action === "load" ? DEMO_LOAD_CONFIRMATION : DEMO_RESET_CONFIRMATION;
+    void apiSend(path, "POST", { confirmation })
+      .then(() => refresh())
+      .catch((err: unknown) => setError(err instanceof Error ? err.message : "Demo action failed"))
+      .finally(() => setBusy(null));
+  };
 
   return (
     <div className="space-y-6">
@@ -196,12 +206,12 @@ export function SettingsPage() {
       ) : null}
 
       {canDemo ? (
-        <section className="rounded-card border border-line bg-white p-6 shadow-card">
+        <section className="rounded-card border border-line bg-white p-6 shadow-card" aria-busy={Boolean(busy)}>
           <h2 className="font-semibold text-deep">Demo data</h2>
           <p className="mt-1 text-sm text-muted">
             Fill the school with fictional pupils, staff, fees and sample activity so you can click through every
             screen. When testing is finished, reset removes only that demo data and leaves the school profile ready
-            for official records. Type the confirmation phrase exactly.
+            for official records.
           </p>
           {demo.data?.loaded ? (
             <p className="mt-3 text-sm text-ink">
@@ -214,61 +224,74 @@ export function SettingsPage() {
               Demo is not loaded. Finish first-run setup first, then load demo data.
             </p>
           )}
-          <label className="mt-3 block text-sm">
-            Load confirmation
-            <input
-              className="mt-1 w-full rounded-lg border border-line px-3 py-2"
-              value={loadPhrase}
-              onChange={(e) => setLoadPhrase(e.target.value)}
-              placeholder={DEMO_LOAD_CONFIRMATION}
-            />
-          </label>
-          <button
-            className="mt-3 rounded-lg bg-purple px-4 py-2 text-white disabled:opacity-50"
-            type="button"
-            disabled={busy}
-            onClick={() => {
-              setError(null);
-              setBusy(true);
-              void apiSend("/api/v1/system/demo/load", "POST", { confirmation: loadPhrase })
-                .then(() => {
-                  setLoadPhrase("");
-                  refresh();
-                })
-                .catch((err: unknown) => setError(err instanceof Error ? err.message : "Demo load failed"))
-                .finally(() => setBusy(false));
-            }}
-          >
-            Fill with demo data
-          </button>
-          <label className="mt-4 block text-sm">
-            Reset confirmation
-            <input
-              className="mt-1 w-full rounded-lg border border-line px-3 py-2"
-              value={resetPhrase}
-              onChange={(e) => setResetPhrase(e.target.value)}
-              placeholder={DEMO_RESET_CONFIRMATION}
-            />
-          </label>
-          <button
-            className="mt-3 rounded-lg border border-danger px-4 py-2 text-danger disabled:opacity-50"
-            type="button"
-            disabled={busy}
-            onClick={() => {
-              setError(null);
-              setBusy(true);
-              void apiSend("/api/v1/system/demo/reset", "POST", { confirmation: resetPhrase })
-                .then(() => {
-                  setResetPhrase("");
-                  refresh();
-                })
-                .catch((err: unknown) => setError(err instanceof Error ? err.message : "Demo reset failed"))
-                .finally(() => setBusy(false));
-            }}
-          >
-            Reset demo data
-          </button>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <button
+              className="rounded-lg bg-purple px-4 py-2 text-white disabled:opacity-50"
+              type="button"
+              disabled={Boolean(busy)}
+              onClick={() => {
+                setError(null);
+                setPending("load");
+              }}
+            >
+              Fill with demo data
+            </button>
+            <button
+              className="rounded-lg border border-danger px-4 py-2 text-danger disabled:opacity-50"
+              type="button"
+              disabled={Boolean(busy)}
+              onClick={() => {
+                setError(null);
+                setPending("reset");
+              }}
+            >
+              Reset demo data
+            </button>
+          </div>
+          {pending ? (
+            <div className="mt-4 rounded-lg border border-line bg-pale p-4" role="alertdialog" aria-labelledby="demo-confirm-title">
+              <p id="demo-confirm-title" className="font-medium text-deep">
+                {pending === "load" ? "Load fictional demo data?" : "Remove all demo data?"}
+              </p>
+              <p className="mt-1 text-sm text-muted">
+                {pending === "load"
+                  ? "This adds sample pupils, staff, fees and activity. It can take up to a minute."
+                  : "This deletes demo pupils, payments and demo logins. Your school profile and Super Admin account stay."}
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  className="rounded-lg bg-purple px-4 py-2 text-white"
+                  type="button"
+                  onClick={() => runDemo(pending)}
+                >
+                  {pending === "load" ? "Yes, load demo data" : "Yes, reset demo data"}
+                </button>
+                <button
+                  className="rounded-lg border border-line px-4 py-2"
+                  type="button"
+                  onClick={() => setPending(null)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : null}
         </section>
+      ) : null}
+      {busy ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50"
+          role="status"
+          aria-live="assertive"
+        >
+          <div className="mx-4 max-w-sm rounded-card bg-white p-8 text-center shadow-card">
+            <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-soft border-t-purple" />
+            <p className="mt-4 font-semibold text-deep">
+              {busy === "load" ? "Loading demo data…" : "Resetting demo data…"}
+            </p>
+            <p className="mt-1 text-sm text-muted">Keep this page open until it finishes.</p>
+          </div>
+        </div>
       ) : null}
     </div>
   );
