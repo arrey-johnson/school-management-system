@@ -33,9 +33,21 @@ export function registerAcademicRoutes(app: FastifyInstance, ctx: AppContext): v
     requirePermission(user, "academic:read");
     const years = ctx.bundle.db.select().from(academicYears).all();
     const termRows = ctx.bundle.db.select().from(terms).all();
-    const sectionRows = ctx.bundle.db.select().from(sections).all();
+    const sectionRows = ctx.bundle.db
+      .select()
+      .from(sections)
+      .all()
+      .filter((section) => !section.archivedAt);
+    const visibleSectionIds = new Set(sectionRows.map((section) => section.id));
     const levelRows = ctx.bundle.db.select().from(levels).all();
-    const classRows = ctx.bundle.db.select().from(classes).all();
+    const classRows = ctx.bundle.db
+      .select()
+      .from(classes)
+      .all()
+      .filter((cls) => {
+        const level = levelRows.find((row) => row.id === cls.levelId);
+        return Boolean(level && visibleSectionIds.has(level.sectionId));
+      });
     const subjectRows = ctx.bundle.db.select().from(subjects).all();
     return {
       years: years.map((year) => ({
@@ -67,6 +79,8 @@ export function registerAcademicRoutes(app: FastifyInstance, ctx: AppContext): v
     const body = classCreateSchema.parse(req.body);
     const level = ctx.bundle.db.select().from(levels).where(eq(levels.id, body.levelId)).get();
     if (!level) throw httpError(400, "VALIDATION", "Unknown level");
+    const section = ctx.bundle.db.select().from(sections).where(eq(sections.id, level.sectionId)).get();
+    if (section?.archivedAt) throw httpError(400, "VALIDATION", "That level is not used for this school type");
     const stream = body.stream?.trim() ? body.stream.trim() : null;
     const duplicate = ctx.bundle.db
       .select()

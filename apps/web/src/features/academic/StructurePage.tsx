@@ -1,6 +1,19 @@
+import type { SchoolKind } from "@sms/shared";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuth } from "../../app/AuthProvider";
+import { SchoolKindFields } from "../../components/SchoolKindFields";
 import { apiGet, apiSend } from "../../lib/api";
+
+type SchoolProfile = {
+  id: string;
+  name: string;
+  schoolKind: SchoolKind;
+  motto: string | null;
+  address: string | null;
+  phone: string | null;
+  email: string | null;
+};
 
 type Level = { id: string; name: string };
 type Section = { id: string; name: string; levels: Level[] };
@@ -27,14 +40,26 @@ type Grading = {
 };
 
 export function StructurePage() {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
+  const canEditSchool = user?.roleSlug === "super_admin" || user?.permissions.includes("school:update");
   const tree = useQuery({ queryKey: ["academic-tree"], queryFn: () => apiGet<Tree>("/api/v1/academic/tree") });
   const grading = useQuery({ queryKey: ["grading"], queryFn: () => apiGet<Grading>("/api/v1/academic/grading") });
+  const school = useQuery({
+    queryKey: ["school-profile"],
+    queryFn: () => apiGet<{ school: SchoolProfile | null }>("/api/v1/school"),
+  });
   const [error, setError] = useState<string | null>(null);
+  const [schoolKind, setSchoolKind] = useState<SchoolKind | "">("");
   const [levelId, setLevelId] = useState("");
   const [stream, setStream] = useState("A");
   const [code, setCode] = useState("");
   const [subjectName, setSubjectName] = useState("");
+
+  useEffect(() => {
+    const kind = school.data?.school?.schoolKind;
+    if (kind) setSchoolKind(kind);
+  }, [school.data?.school?.schoolKind]);
 
   const year = tree.data?.years.find((y) => y.isActive) ?? tree.data?.years[0];
   const levels = tree.data?.sections.flatMap((s) => s.levels) ?? [];
@@ -43,6 +68,44 @@ export function StructurePage() {
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold text-deep">School structure</h1>
       {error ? <p className="text-sm text-danger">{error}</p> : null}
+
+      <article className="rounded-card border border-line bg-white p-5 shadow-card">
+        <h2 className="font-semibold">School type</h2>
+        <form
+          className="mt-3 space-y-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const profile = school.data?.school;
+            if (!profile || !schoolKind) return;
+            setError(null);
+            void apiSend("/api/v1/school", "PATCH", {
+              name: profile.name,
+              schoolKind,
+              motto: profile.motto ?? "",
+              address: profile.address ?? "",
+              phone: profile.phone ?? "",
+              email: profile.email ?? "",
+            })
+              .then(() =>
+                Promise.all([
+                  queryClient.invalidateQueries({ queryKey: ["academic-tree"] }),
+                  queryClient.invalidateQueries({ queryKey: ["school-profile"] }),
+                  queryClient.invalidateQueries({ queryKey: ["branding"] }),
+                ]),
+              )
+              .catch((err: unknown) => setError(err instanceof Error ? err.message : "Failed"));
+          }}
+        >
+          <SchoolKindFields value={schoolKind} onChange={setSchoolKind} disabled={!canEditSchool} />
+          {canEditSchool ? (
+            <button className="rounded-lg bg-purple px-4 py-2 text-white" type="submit">
+              Save school type
+            </button>
+          ) : (
+            <p className="text-sm text-muted">Ask an administrator if this needs to change.</p>
+          )}
+        </form>
+      </article>
 
       <div className="grid gap-4 lg:grid-cols-2">
         <article className="rounded-card border border-line bg-white p-5 shadow-card">

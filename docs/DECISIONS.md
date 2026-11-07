@@ -291,6 +291,6 @@ This supersedes spec section 2’s “bundle Node and run it as a Windows servic
 
 ## D045 — School kind at setup
 
-**Decision:** First-run setup requires `schoolKind`: `primary` (Nursery 1–2 and Class 1–6), `secondary` (Form 1–5, Lower Sixth, Upper Sixth), or `combined` (all three sections). The first academic year seeds only matching sections. Staff can still add or rename levels later. Existing databases default to `combined` so current ALL BRIGHT CHILDREN data is unchanged.
+**Decision:** First-run setup requires `schoolKind`: `primary` (Nursery 1–2 and Class 1–6), `secondary` (Form 1–5, Lower Sixth, Upper Sixth), or `combined` (all three sections). The first academic year seeds only matching sections. After setup, Super Admin and Headteacher (`school:update`) can change the kind on School structure. Changing kind adds any missing default sections/levels. Default sections that no longer belong and have no classes are archived (hidden), never deleted, so pupil history stays intact. Existing databases default to `combined`.
 
-**Reason:** A primary-only or secondary-only school should not see the other cycle’s classes on Structure. Combined is required for mixed schools and for tests that use both Form 1 and Nursery 1.
+**Reason:** A primary-only or secondary-only school should not see the other cycle’s classes on Structure. Staff can correct a wrong first choice without wiping data. Combined is required for mixed schools and for tests that use both Form 1 and Nursery 1.

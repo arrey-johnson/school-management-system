@@ -1,6 +1,20 @@
 export const SCHOOL_KINDS = ["primary", "secondary", "combined"] as const;
 export type SchoolKind = (typeof SCHOOL_KINDS)[number];
 
+export const DEFAULT_SECTION_NAMES = ["Nursery", "Primary", "Secondary"] as const;
+export type DefaultSectionName = (typeof DEFAULT_SECTION_NAMES)[number];
+
+export function resolveSchoolKind(value: string | null | undefined): SchoolKind {
+  if (value && (SCHOOL_KINDS as readonly string[]).includes(value)) {
+    return value as SchoolKind;
+  }
+  return "combined";
+}
+
+export function isDefaultSectionName(name: string): name is DefaultSectionName {
+  return (DEFAULT_SECTION_NAMES as readonly string[]).includes(name);
+}
+
 export const NURSERY_PRIMARY_SECTION = {
   name: "Nursery",
   levels: ["Nursery 1", "Nursery 2"],

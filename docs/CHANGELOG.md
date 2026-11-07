@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.8.3 — Change school type after setup
+
+- Headteachers and Super Admins can change primary / secondary / combined on School structure.
+- Missing classes for the new type are added; unused empty sections from the other cycle are hidden, not deleted.
+
 ## 0.8.2 — School kind at setup
 
 - Setup asks whether the school is primary, secondary, or nursery through secondary.

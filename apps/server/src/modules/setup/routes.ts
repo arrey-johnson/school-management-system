@@ -2,10 +2,8 @@ import {
   academicYearSetupSchema,
   bootstrapSchema,
   createId,
+  resolveSchoolKind,
   schoolProfileSchema,
-  SCHOOL_KINDS,
-  sectionsForSchoolKind,
-  type SchoolKind,
 } from "@sms/shared";
 import { eq } from "drizzle-orm";
 import type { FastifyInstance } from "fastify";
@@ -14,8 +12,9 @@ import { writeAudit } from "../../audit/service.js";
 import { assertCsrf } from "../../auth/csrf.js";
 import { hashPassword } from "../../auth/password.js";
 import { requirePermission, requireUser, resolveSession } from "../../auth/session.js";
-import { academicYears, levels, roles, schoolProfile, sections, settings, terms, users } from "../../db/schema.js";
+import { academicYears, roles, schoolProfile, settings, terms, users } from "../../db/schema.js";
 import { httpError } from "../../utils/http-error.js";
+import { ensureDefaultSections } from "../academic/structure.js";
 
 function isSetupComplete(ctx: AppContext): boolean {
   const row = ctx.bundle.db.select().from(settings).where(eq(settings.key, "setup.complete")).get();
@@ -138,9 +137,7 @@ export function registerSetupRoutes(app: FastifyInstance, ctx: AppContext): void
     if (!profile) {
       throw httpError(400, "VALIDATION", "Save the school profile first");
     }
-    const kind: SchoolKind = (SCHOOL_KINDS as readonly string[]).includes(profile.schoolKind)
-      ? (profile.schoolKind as SchoolKind)
-      : "combined";
+    const kind = resolveSchoolKind(profile.schoolKind);
     const at = new Date().toISOString();
     const yearId = createId();
     ctx.bundle.sqlite.transaction(() => {
@@ -173,32 +170,7 @@ export function registerSetupRoutes(app: FastifyInstance, ctx: AppContext): void
           })
           .run();
       });
-      sectionsForSchoolKind(kind).forEach((section, sIndex) => {
-        const sectionId = createId();
-        ctx.bundle.db
-          .insert(sections)
-          .values({
-            id: sectionId,
-            name: section.name,
-            sortOrder: sIndex + 1,
-            createdAt: at,
-            updatedAt: at,
-          })
-          .run();
-        section.levels.forEach((levelName, lIndex) => {
-          ctx.bundle.db
-            .insert(levels)
-            .values({
-              id: createId(),
-              sectionId,
-              name: levelName,
-              sortOrder: lIndex + 1,
-              createdAt: at,
-              updatedAt: at,
-            })
-            .run();
-        });
-      });
+      ensureDefaultSections(ctx.bundle.db, kind, at);
     })();
     writeAudit(ctx.bundle.db, {
       actorUserId: user.id,

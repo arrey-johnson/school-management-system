@@ -2,6 +2,7 @@ import { POWERED_BY, type SchoolKind } from "@sms/shared";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../app/AuthProvider";
+import { SchoolKindFields } from "../../components/SchoolKindFields";
 import { apiGet, apiSend, type MeUser } from "../../lib/api";
 
 type Status = {
@@ -124,54 +125,7 @@ export function SetupPage() {
             onChange={(e) => setSchoolName(e.target.value)}
             required
           />
-          <fieldset className="space-y-2">
-            <legend className="text-sm font-medium text-deep">What kind of school is this?</legend>
-            <p className="text-sm text-muted">
-              Classes are created to match this choice. You can still add or rename levels later.
-            </p>
-            <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-line p-3">
-              <input
-                className="mt-1"
-                type="radio"
-                name="schoolKind"
-                required
-                checked={schoolKind === "primary"}
-                onChange={() => setSchoolKind("primary")}
-              />
-              <span>
-                <span className="font-medium">Primary school</span>
-                <span className="block text-sm text-muted">Nursery 1–2 and Class 1–6</span>
-              </span>
-            </label>
-            <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-line p-3">
-              <input
-                className="mt-1"
-                type="radio"
-                name="schoolKind"
-                required
-                checked={schoolKind === "secondary"}
-                onChange={() => setSchoolKind("secondary")}
-              />
-              <span>
-                <span className="font-medium">Secondary school</span>
-                <span className="block text-sm text-muted">Form 1–5, Lower Sixth, Upper Sixth</span>
-              </span>
-            </label>
-            <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-line p-3">
-              <input
-                className="mt-1"
-                type="radio"
-                name="schoolKind"
-                required
-                checked={schoolKind === "combined"}
-                onChange={() => setSchoolKind("combined")}
-              />
-              <span>
-                <span className="font-medium">Nursery, primary and secondary</span>
-                <span className="block text-sm text-muted">All sections (for schools like ALL BRIGHT CHILDREN)</span>
-              </span>
-            </label>
-          </fieldset>
+          <SchoolKindFields value={schoolKind} onChange={setSchoolKind} />
           <button className="rounded-lg bg-purple px-4 py-2 text-white" type="submit">
             Save school
           </button>

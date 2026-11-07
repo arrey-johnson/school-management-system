@@ -1,12 +1,15 @@
 import fs from "node:fs";
 import os from "node:os";
-import { APP_VERSION, paginationQuerySchema } from "@sms/shared";
-import { desc } from "drizzle-orm";
+import { APP_VERSION, paginationQuerySchema, resolveSchoolKind, schoolProfileSchema } from "@sms/shared";
+import { desc, eq } from "drizzle-orm";
 import type { FastifyInstance } from "fastify";
 import type { AppContext } from "../../app-context.js";
-import { verifyAuditChain } from "../../audit/service.js";
+import { verifyAuditChain, writeAudit } from "../../audit/service.js";
+import { assertCsrf } from "../../auth/csrf.js";
 import { requirePermission, requireUser, resolveSession } from "../../auth/session.js";
 import { auditLog, schoolProfile } from "../../db/schema.js";
+import { httpError } from "../../utils/http-error.js";
+import { ensureDefaultSections } from "../academic/structure.js";
 import { backupHealth, diskFreeBytes, liveIntegrity } from "../backup/service.js";
 import { lanQrSvg } from "../../utils/qr.js";
 import { openApiDocument } from "./openapi.js";
@@ -68,7 +71,64 @@ export function registerSystemRoutes(app: FastifyInstance, ctx: AppContext): voi
     const user = requireUser(resolveSession(ctx.bundle, req));
     requirePermission(user, "school:read");
     const school = ctx.bundle.db.select().from(schoolProfile).get();
-    return { school: school ?? null };
+    if (!school) return { school: null };
+    return {
+      school: {
+        id: school.id,
+        name: school.name,
+        schoolKind: resolveSchoolKind(school.schoolKind),
+        motto: school.motto,
+        address: school.address,
+        phone: school.phone,
+        email: school.email,
+      },
+    };
+  });
+
+  app.patch("/api/v1/school", async (req) => {
+    assertCsrf(req);
+    const user = requireUser(resolveSession(ctx.bundle, req));
+    requirePermission(user, "school:update");
+    const body = schoolProfileSchema.parse(req.body);
+    const existing = ctx.bundle.db.select().from(schoolProfile).get();
+    if (!existing) throw httpError(400, "VALIDATION", "School profile is required");
+    const at = new Date().toISOString();
+    const before = {
+      name: existing.name,
+      schoolKind: resolveSchoolKind(existing.schoolKind),
+      motto: existing.motto,
+      address: existing.address,
+      phone: existing.phone,
+      email: existing.email,
+    };
+    ctx.bundle.sqlite.transaction(() => {
+      ctx.bundle.db
+        .update(schoolProfile)
+        .set({
+          name: body.name,
+          schoolKind: body.schoolKind,
+          motto: body.motto === undefined ? existing.motto : body.motto || null,
+          address: body.address === undefined ? existing.address : body.address || null,
+          phone: body.phone === undefined ? existing.phone : body.phone || null,
+          email: body.email === undefined ? existing.email : body.email || null,
+          updatedAt: at,
+          updatedBy: user.id,
+        })
+        .where(eq(schoolProfile.id, existing.id))
+        .run();
+      ensureDefaultSections(ctx.bundle.db, body.schoolKind, at);
+    })();
+    writeAudit(ctx.bundle.db, {
+      actorUserId: user.id,
+      ip: req.ip,
+      module: "school",
+      action: "update",
+      entity: "school_profile",
+      entityId: existing.id,
+      before,
+      after: body,
+    });
+    return { ok: true };
   });
 
   app.get("/api/v1/audit", async (req) => {

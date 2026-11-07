@@ -1,6 +1,6 @@
 import { CSRF_HEADER } from "@sms/shared";
 import { afterEach, describe, expect, it } from "vitest";
-import { bootstrapAndLogin, startTestApp } from "./helpers.js";
+import { bootstrapAndLogin, completeWizard, startTestApp } from "./helpers.js";
 
 const apps: Array<{ app: { close: () => Promise<void> } }> = [];
 
@@ -137,5 +137,44 @@ describe("first-run wizard", () => {
     expect(names).toContain("Form 1");
     expect(names).not.toContain("Class 1");
     expect(names).not.toContain("Nursery 1");
+  });
+
+  it("lets an admin change school kind after setup and hides unused empty sections", async () => {
+    const built = await startTestApp();
+    apps.push(built);
+    const session = await bootstrapAndLogin(built.app);
+    await completeWizard(built.app, session.cookies, session.csrf);
+    const headers = { cookie: session.cookies, [CSRF_HEADER]: session.csrf };
+
+    const before = await built.app.inject({ method: "GET", url: "/api/v1/school", headers });
+    expect(before.json().school.schoolKind).toBe("combined");
+
+    const toPrimary = await built.app.inject({
+      method: "PATCH",
+      url: "/api/v1/school",
+      headers,
+      payload: { name: "ALL BRIGHT CHILDREN", schoolKind: "primary" },
+    });
+    expect(toPrimary.statusCode).toBe(200);
+    const primaryTree = await built.app.inject({ method: "GET", url: "/api/v1/academic/tree", headers });
+    const primaryNames = (
+      primaryTree.json().sections as Array<{ name: string; levels: Array<{ name: string }> }>
+    ).flatMap((section) => [section.name, ...section.levels.map((level) => level.name)]);
+    expect(primaryNames).toContain("Class 1");
+    expect(primaryNames).not.toContain("Form 1");
+
+    const toCombined = await built.app.inject({
+      method: "PATCH",
+      url: "/api/v1/school",
+      headers,
+      payload: { name: "ALL BRIGHT CHILDREN", schoolKind: "combined" },
+    });
+    expect(toCombined.statusCode).toBe(200);
+    const combinedTree = await built.app.inject({ method: "GET", url: "/api/v1/academic/tree", headers });
+    const combinedNames = (
+      combinedTree.json().sections as Array<{ name: string; levels: Array<{ name: string }> }>
+    ).flatMap((section) => [section.name, ...section.levels.map((level) => level.name)]);
+    expect(combinedNames).toContain("Form 1");
+    expect(combinedNames).toContain("Class 1");
   });
 });
