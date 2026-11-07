@@ -64,7 +64,7 @@ export function registerSetupRoutes(app: FastifyInstance, ctx: AppContext): void
         displayName: body.displayName,
         roleId: role.id,
         locale: "en",
-        mustChangePassword: false,
+        mustChangePassword: ctx.env.SMS_TEST !== "1",
         createdAt: at,
         updatedAt: at,
       })

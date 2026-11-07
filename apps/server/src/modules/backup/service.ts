@@ -83,7 +83,7 @@ function pruneOld(bundle: DatabaseBundle): void {
 export async function createBackup(
   bundle: DatabaseBundle,
   actorUserId: string | null,
-  kind: "manual" | "scheduled" | "safety",
+  kind: "manual" | "scheduled" | "safety" | "upgrade",
 ): Promise<{ id: string; filename: string; checksum: string; integrity: string; stale: boolean }> {
   const stamp = nowIso().replace(/[:.]/g, "-");
   const filename = `sms-${stamp}.sms-backup`;
@@ -241,6 +241,25 @@ export async function restoreBackup(
 export function liveIntegrity(bundle: DatabaseBundle): string {
   const row = bundle.sqlite.prepare("PRAGMA integrity_check").get() as Record<string, string> | undefined;
   return row ? (Object.values(row)[0] ?? "unknown") : "unknown";
+}
+
+export async function maybePreMigrationBackup(bundle: DatabaseBundle): Promise<{ ran: boolean; from: string; to: string }> {
+  const current = setting(bundle, "schema.version", "0");
+  const to = APP_VERSION;
+  if (current === to) return { ran: false, from: current, to };
+  const dbExists = fs.existsSync(bundle.dbPath) && fs.statSync(bundle.dbPath).size > 0;
+  const setupDone = setting(bundle, "setup.complete", "false") === "true";
+  if (dbExists && (current !== "0" || setupDone)) {
+    await createBackup(bundle, null, "upgrade");
+  }
+  const at = nowIso();
+  const existing = bundle.db.select().from(settings).where(eq(settings.key, "schema.version")).get();
+  if (existing) {
+    bundle.db.update(settings).set({ valueJson: to, updatedAt: at }).where(eq(settings.key, "schema.version")).run();
+  } else {
+    bundle.db.insert(settings).values({ key: "schema.version", valueJson: to, updatedAt: at }).run();
+  }
+  return { ran: dbExists && (current !== "0" || setupDone), from: current, to };
 }
 
 export function diskFreeBytes(dataDir: string): number | null {

@@ -1,8 +1,7 @@
-# Demo — Phase 7 Backup and health
+# Demo — Phase 8 handover
 
-1. Hard-refresh `http://localhost:3847` after `docker compose up --build`.
-2. **System health** shows a red 48-hour warning until the first backup. Integrity should be `ok`.
-3. Super Admin: **Create backup now**. The warning clears. Teacher cannot hit the backup API.
-4. Add a throwaway pupil, then **Restore** the earlier archive after typing `RESTORE SCHOOL DATA`. The throwaway pupil is gone; a safety archive remains on disk.
-5. **Audit log** → Verify audit integrity.
-6. Drive stays “off (local only)” unless enabled in settings.
+1. `docker compose up --build` and hard-refresh `http://localhost:3847`.
+2. If the database is empty, complete **First-run setup**.
+3. **System health**: version 0.8.0, LAN URL, QR code, runtime “Docker Compose”.
+4. Create a backup. On a school PC, the same flow is `Install-PromptstackSMS.ps1` then the desktop shortcut **Open School System**.
+5. Show that Docker-down means the site is down — start Docker, then `Start-PromptstackSMS.ps1`.

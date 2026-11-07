@@ -270,3 +270,15 @@ This supersedes spec section 2’s “bundle Node and run it as a Windows servic
 **Decision:** Restore requires typing `RESTORE SCHOOL DATA`. A safety `.sms-backup` is written first. Archives are gzip-framed `SMSBK1` blobs (SQLite snapshot from the backup API + uploads + SHA-256), not a copy of the live `app.db`.
 
 **Reason:** Accidental restore would wipe a school year. The phrase is documented in `docs/BACKUP_RESTORE.md`.
+
+## D042 — Installer layout
+
+**Decision:** App files in `C:\Program Files\PromptstackSMS\` (Compose, scripts, image tar). School data and `.env` in `C:\ProgramData\PromptstackSMS\`. Boot is a Windows scheduled task that waits for `docker info` then `docker compose up -d`. Inno Setup wraps the same PowerShell. NSSM is not used to run Node.
+
+**Reason:** D031. Separating Program Files from ProgramData keeps upgrades from touching `app.db`.
+
+## D043 — Pre-migration backup on version change
+
+**Decision:** On process start, if `settings.schema.version` is set and differs from `APP_VERSION`, write an `upgrade` `.sms-backup` before the new code serves traffic. Fresh installs (`schema.version` still `0`) skip that extra archive.
+
+**Reason:** Spec upgrade path. Image replace is not a data wipe because the bind mount stays; this archive covers schema drift.

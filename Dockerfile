@@ -5,6 +5,8 @@ WORKDIR /app
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* tsconfig.base.json eslint.config.js .prettierrc ./
 COPY packages ./packages
 COPY apps ./apps
+COPY installer ./installer
+COPY scripts ./scripts
 RUN pnpm install --frozen-lockfile=false
 RUN pnpm --filter @sms/shared build && pnpm --filter @sms/web build && pnpm --filter @sms/server build
 RUN pnpm --filter @sms/shared test && pnpm --filter @sms/server test

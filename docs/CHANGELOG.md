@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.8.0 — Phase 8 Packaging and handover
+
+- Offline installer: bundled image tar, Compose on ProgramData, firewall TCP 3847, boot task, desktop shortcut.
+- Upgrade script loads a new image without wiping data; app writes a pre-migration backup when `schema.version` changes.
+- System health shows LAN URL, QR code, and Docker runtime. Production first admin must change password.
+- Install, upgrade, user, and clean-VM docs.
+
 ## 0.7.0 — Phase 7 Backup, restore, hardening
 
 - Manual and scheduled `.sms-backup` archives via the SQLite backup API, checksum + integrity_check, last-N retention.

@@ -5,11 +5,13 @@ import staticFiles from "@fastify/static";
 import Fastify, { type FastifyInstance } from "fastify";
 import fs from "node:fs";
 import path from "node:path";
+import { Writable } from "node:stream";
 import { fileURLToPath } from "node:url";
 import type { AppContext } from "./app-context.js";
 import type { AppEnv } from "./config/env.js";
 import { openDatabase } from "./db/client.js";
 import { seedFoundation } from "./db/seed.js";
+import { maybePreMigrationBackup } from "./modules/backup/service.js";
 import { registerAcademicRoutes } from "./modules/academic/routes.js";
 import { registerAcademicsRoutes } from "./modules/academics/routes.js";
 import { registerAdminRoutes } from "./modules/admin/routes.js";
@@ -40,11 +42,25 @@ export async function buildApp(env: AppEnv, options: { logger?: boolean } = {}):
 }> {
   const bundle = openDatabase(env.SMS_DATA_DIR);
   seedFoundation(bundle.db);
+  if (env.SMS_TEST !== "1") {
+    await maybePreMigrationBackup(bundle);
+  }
 
   const logging = options.logger ?? env.SMS_TEST !== "1";
+  const logFile = path.join(env.SMS_DATA_DIR, "logs", "app.log");
+  fs.mkdirSync(path.dirname(logFile), { recursive: true });
+  const logStream = logging
+    ? new Writable({
+        write(chunk, _enc, cb) {
+          process.stdout.write(chunk);
+          fs.appendFile(logFile, chunk, cb);
+        },
+      })
+    : undefined;
   const app = Fastify({
     logger: logging
       ? {
+          stream: logStream,
           serializers: {
             req(request) {
               return { method: request.method, url: request.url, host: request.headers.host };

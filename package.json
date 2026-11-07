@@ -15,7 +15,8 @@
     "lint": "eslint .",
     "test": "pnpm --filter @sms/shared test && pnpm --filter @sms/server test",
     "seed": "pnpm --filter @sms/server seed",
-    "e2e": "pnpm --filter @sms/web e2e"
+    "e2e": "pnpm --filter @sms/web e2e",
+    "package:win": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-win.ps1"
   },
   "devDependencies": {
     "@eslint/js": "^9.16.0",

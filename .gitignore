@@ -54,6 +54,7 @@ uploads/
 # Installer output
 installer/output/
 installer/dist/
+installer/payload/*.tar
 
 # OS
 .DS_Store

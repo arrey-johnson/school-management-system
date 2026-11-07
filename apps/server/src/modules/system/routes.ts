@@ -8,6 +8,7 @@ import { verifyAuditChain } from "../../audit/service.js";
 import { requirePermission, requireUser, resolveSession } from "../../auth/session.js";
 import { auditLog, schoolProfile } from "../../db/schema.js";
 import { backupHealth, diskFreeBytes, liveIntegrity } from "../backup/service.js";
+import { lanQrSvg } from "../../utils/qr.js";
 import { openApiDocument } from "./openapi.js";
 
 export function registerSystemRoutes(app: FastifyInstance, ctx: AppContext): void {
@@ -24,6 +25,7 @@ export function registerSystemRoutes(app: FastifyInstance, ctx: AppContext): voi
       port: ctx.env.SMS_PORT,
       diskFreeBytes: diskFreeBytes(ctx.bundle.dataDir),
       integrity: liveIntegrity(ctx.bundle),
+      inDocker: fs.existsSync("/.dockerenv"),
       ...backup,
     };
   });
@@ -45,12 +47,15 @@ export function registerSystemRoutes(app: FastifyInstance, ctx: AppContext): voi
       }
     }
     const school = ctx.bundle.db.select().from(schoolProfile).get();
+    const url = `http://${ips[0] ?? "localhost"}:${ctx.env.SMS_PORT}`;
     return {
       schoolName: school?.name ?? null,
       hostname: os.hostname(),
       ips,
-      url: `http://${ips[0] ?? "localhost"}:${ctx.env.SMS_PORT}`,
+      url,
       version: APP_VERSION,
+      inDocker: fs.existsSync("/.dockerenv"),
+      qrSvg: await lanQrSvg(url),
     };
   });
 

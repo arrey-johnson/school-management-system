@@ -17,6 +17,16 @@ type Health = {
   backupStale: boolean;
   driveEnabled: boolean;
   queuedUploads: number;
+  inDocker: boolean;
+};
+
+type Status = {
+  url: string;
+  ips: string[];
+  hostname: string;
+  qrSvg: string;
+  inDocker: boolean;
+  version: string;
 };
 
 type BackupRow = {
@@ -42,6 +52,10 @@ export function SettingsPage() {
     queryKey: ["backups"],
     queryFn: () => apiGet<{ items: BackupRow[] }>("/api/v1/backups"),
     enabled: Boolean(canBackup),
+  });
+  const status = useQuery({
+    queryKey: ["status"],
+    queryFn: () => apiGet<Status>("/api/v1/system/status"),
   });
   const data = health.data;
   const refresh = () => void queryClient.invalidateQueries();
@@ -91,7 +105,21 @@ export function SettingsPage() {
               {data?.driveEnabled ? `queued ${data.queuedUploads}` : "off (local only)"}
             </dd>
           </div>
+          <div>
+            <dt className="text-muted">Runtime</dt>
+            <dd className="font-medium">{data?.inDocker ? "Docker Compose" : "unexpected host process"}</dd>
+          </div>
         </dl>
+        {status.data ? (
+          <div className="mt-6 border-t border-line pt-4">
+            <p className="text-sm text-muted">Staff PCs open this URL on the school LAN</p>
+            <p className="mt-1 font-medium text-deep">{status.data.url}</p>
+            <div
+              className="mt-3 w-44 bg-white"
+              dangerouslySetInnerHTML={{ __html: status.data.qrSvg }}
+            />
+          </div>
+        ) : null}
       </div>
 
       {canBackup ? (
