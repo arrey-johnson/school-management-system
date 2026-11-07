@@ -201,13 +201,13 @@ export function AppShell() {
 
   const nav = (
     <>
-      <div className={`border-b border-white/15 ${collapsed ? "px-3 py-4" : "px-4 py-4"}`}>
+      <div className={`shrink-0 border-b border-white/15 ${collapsed ? "px-3 py-4" : "px-4 py-4"}`}>
         <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/70">School</p>
         <h1 className={`mt-1 font-semibold leading-tight text-white ${collapsed ? "sr-only" : "text-base"}`}>
           {schoolName}
         </h1>
       </div>
-      <nav className="flex-1 space-y-1 overflow-y-auto p-2">
+      <nav className="min-h-0 flex-1 space-y-1 overflow-hidden p-2">
         <NavItemLink item={homeLink} collapsed={collapsed} label={t(homeLink.labelKey)} />
         {groups.map((group) => {
           const visible = group.items.filter((item) => can(item.perm));
@@ -257,7 +257,7 @@ export function AppShell() {
   );
 
   return (
-    <div className="flex min-h-screen bg-pale">
+    <div className="flex h-screen overflow-hidden bg-pale">
       {mobileOpen ? (
         <button
           className="fixed inset-0 z-30 bg-ink/40 md:hidden"
@@ -267,14 +267,14 @@ export function AppShell() {
         />
       ) : null}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex flex-col bg-deep text-white shadow-xl transition-all md:static md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-40 flex h-screen flex-col overflow-hidden bg-deep text-white shadow-xl transition-all md:static md:translate-x-0 ${
           mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         } ${collapsed ? "w-[4.5rem]" : "w-64"}`}
       >
         {nav}
       </aside>
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-line bg-white/95 px-3 py-3 backdrop-blur md:px-6">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+        <header className="z-20 flex shrink-0 items-center justify-between gap-3 border-b border-line bg-white/95 px-3 py-3 backdrop-blur md:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <button
               className="rounded-xl border border-line p-2 text-deep"
@@ -313,10 +313,10 @@ export function AppShell() {
             </button>
           </div>
         </header>
-        <main className="flex-1 overflow-x-auto bg-pale p-4 md:p-6">
+        <main className="min-h-0 flex-1 overflow-auto bg-pale p-4 md:p-6">
           <Outlet />
         </main>
-        <footer className="border-t border-line bg-white px-4 py-3 text-center text-xs text-muted md:px-6">
+        <footer className="shrink-0 border-t border-line bg-white px-4 py-3 text-center text-xs text-muted md:px-6">
           {POWERED_BY}
         </footer>
       </div>
